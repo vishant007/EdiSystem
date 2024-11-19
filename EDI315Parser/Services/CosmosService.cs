@@ -13,7 +13,7 @@ namespace EDI315Parser.Services
         private const string databaseId = "EDIParserDatabase";
         private const string containerId = "EDIParserContainer";
 
-      
+
         public static async Task InitializeAsync(string endpointUri, string primaryKey)
         {
             cosmosClient = new CosmosClient(endpointUri, primaryKey);
@@ -22,13 +22,13 @@ namespace EDI315Parser.Services
             Console.WriteLine("Cosmos DB Initialized.");
         }
 
-        
+
         public static async Task AddDataAsync(MsgData msgData)
         {
             try
             {
-                msgData.id = Guid.NewGuid().ToString();  
-                
+                msgData.id = Guid.NewGuid().ToString();
+
                 await container.CreateItemAsync(msgData, new PartitionKey(msgData.PartitionKey));
                 Console.WriteLine("Data added to Cosmos DB.");
             }
@@ -38,19 +38,45 @@ namespace EDI315Parser.Services
             }
         }
 
-        
+
         public static async Task PushDataToCosmos(MsgData msgData)
         {
             try
             {
-                
-                await container.CreateItemAsync(msgData, new PartitionKey(msgData.PartitionKey));
-                Console.WriteLine("Data pushed to Cosmos DB.");
+                var flatData = new
+                {
+                    id = msgData.id,
+                    PartitionKey = msgData.PartitionKey,
+                    TransactionSetIdentifierCode = msgData.stSegment.Transaction_Set_Identifier_Code,
+                    TransactionSetControlNumber = msgData.stSegment.Transaction_Set_Control_Number,
+                    SpecialHandlingCode = msgData.b4Segment.SpecialHandlingCode,
+                    ShipmentStatusCode = msgData.b4Segment.ShipmentStatusCode,
+                    EquipmentStatusCode = msgData.b4Segment.EquipmentStatusCode,
+                    EquipmentType = msgData.b4Segment.EquipmentType,
+                    ContainerNumber = msgData.b4Segment.ContainerNumber,
+                    B4SegmentDateTime = msgData.b4Segment.DateTime,
+                    ReferenceIdentificationQualifier = msgData.n9Segment.Reference_Identification_Qualifier,
+                    ReferenceIdentification = msgData.n9Segment.Reference_Identification,
+                    VesselCode = msgData.q2Segment.Vessel_Code,
+                    FlightNumber = msgData.q2Segment.Flight_Number,
+                    VesselName = msgData.q2Segment.Vessel_Name,
+                    ShipmentStatusCodeSG = msgData.sgSegment.Shipment_Status_Code,
+                    SGSegmentDateTime = msgData.sgSegment.DateTime, 
+                    LoadingLocation = msgData.r4Segment.Loading_Location,
+                    Destination = msgData.r4Segment.Destination,
+                    NumberOfIncludedSegments = msgData.seSegment.Number_Of_Included_Segments,
+                    SETransactionSetControlNumber = msgData.seSegment.Transaction_Set_Control_Number
+                };
+
+            
+                await container.CreateItemAsync(flatData, new PartitionKey(msgData.PartitionKey));
+                Console.WriteLine("Flattened data pushed to Cosmos DB.");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error pushing data to Cosmos DB: {ex.Message}");
             }
         }
+
     }
 }

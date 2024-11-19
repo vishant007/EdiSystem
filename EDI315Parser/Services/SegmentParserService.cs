@@ -43,29 +43,21 @@ namespace EDI315Parser.Services
 
         public static R4 ParseR4Segment(string[] lineData, R4 r4)
         {
-            foreach(var line in lineData) {
-                Console.Write(line + " ");
-            }
 
             if (lineData.Length > 4)
             {
                 if (lineData[1] == "L")
                 {
                     r4.Loading_Location = lineData.ElementAtOrDefault(4)?.Trim();
-                    
                 }
-
                 else if (lineData[1] == "D")
                 {
                     r4.Destination = lineData.ElementAtOrDefault(4)?.Trim();
-                    
                 }
-
+            }
 
             return r4;
         }
-
-
 
         public static SE ParseSESegment(string[] lineData) => new SE
         {
