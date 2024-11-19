@@ -44,16 +44,16 @@ namespace EDI315Api.Services
                             var nestedData = new Dictionary<string, object>();
                             foreach (var nestedProperty in nestedObject.Properties())
                             {
-                                nestedData[nestedProperty.Name] = nestedProperty.Value.Type == JTokenType.Null 
-                                                                  ? "NULL" 
+                                nestedData[nestedProperty.Name] = nestedProperty.Value.Type == JTokenType.Null
+                                                                  ? "NULL"
                                                                   : nestedProperty.Value.ToObject<object>();
                             }
                             itemData[property.Name] = nestedData;
                         }
                         else
                         {
-                            itemData[property.Name] = property.Value.Type == JTokenType.Null 
-                                                      ? "NULL" 
+                            itemData[property.Name] = property.Value.Type == JTokenType.Null
+                                                      ? "NULL"
                                                       : property.Value.ToObject<object>();
                         }
                     }
@@ -64,6 +64,7 @@ namespace EDI315Api.Services
 
             return results;
         }
+
 
         // Method specifically to fetch only ContainerNumber for the Watchlist
         public async Task<List<string>> GetContainerNumbersForWatchlistAsync()
@@ -89,5 +90,31 @@ namespace EDI315Api.Services
 
             return containerNumbers;
         }
+        public async Task<Dictionary<string, object>> GetContainerDetailsAsync(string containerNumber)
+        {
+            var query = $"SELECT * FROM c WHERE c.ContainerNumber = @containerNumber";
+            var queryIterator = _container.GetItemQueryIterator<JObject>(new QueryDefinition(query)
+                .WithParameter("@containerNumber", containerNumber));
+
+            if (queryIterator.HasMoreResults)
+            {
+                var response = await queryIterator.ReadNextAsync();
+                var containerDetails = response.FirstOrDefault();
+
+                if (containerDetails != null)
+                {
+                    var detailsData = new Dictionary<string, object>();
+                    foreach (var property in containerDetails.Properties())
+                    {
+                        detailsData[property.Name] = property.Value.Type == JTokenType.Null ? "NULL" : property.Value.ToObject<object>();
+                    }
+                    return detailsData;
+                }
+            }
+
+            return null;
+        }
+
+
     }
 }

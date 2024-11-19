@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\EDI315Api\\EDI315Api.csproj": {}
+    "D:\\EdiSystem\\EDI315Api\\EDI315Api.csproj": {}
   },
   "projects": {
-    "D:\\EDI315Api\\EDI315Api.csproj": {
+    "D:\\EdiSystem\\EDI315Api\\EDI315Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\EDI315Api\\EDI315Api.csproj",
+        "projectUniqueName": "D:\\EdiSystem\\EDI315Api\\EDI315Api.csproj",
         "projectName": "EDI315Api",
-        "projectPath": "D:\\EDI315Api\\EDI315Api.csproj",
+        "projectPath": "D:\\EdiSystem\\EDI315Api\\EDI315Api.csproj",
         "packagesPath": "C:\\Users\\VishantNileshkumarSh\\.nuget\\packages\\",
-        "outputPath": "D:\\EDI315Api\\obj\\",
+        "outputPath": "D:\\EdiSystem\\EDI315Api\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\VishantNileshkumarSh\\AppData\\Roaming\\NuGet\\NuGet.Config",
