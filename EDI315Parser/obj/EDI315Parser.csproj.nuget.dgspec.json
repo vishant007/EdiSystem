@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "d:\\EDI315Parser\\EDI315Parser.csproj": {}
+    "D:\\EdiSystem\\EDI315Parser\\EDI315Parser.csproj": {}
   },
   "projects": {
-    "d:\\EDI315Parser\\EDI315Parser.csproj": {
+    "D:\\EdiSystem\\EDI315Parser\\EDI315Parser.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "d:\\EDI315Parser\\EDI315Parser.csproj",
+        "projectUniqueName": "D:\\EdiSystem\\EDI315Parser\\EDI315Parser.csproj",
         "projectName": "EDI315Parser",
-        "projectPath": "d:\\EDI315Parser\\EDI315Parser.csproj",
+        "projectPath": "D:\\EdiSystem\\EDI315Parser\\EDI315Parser.csproj",
         "packagesPath": "C:\\Users\\VishantNileshkumarSh\\.nuget\\packages\\",
-        "outputPath": "d:\\EDI315Parser\\obj\\",
+        "outputPath": "D:\\EdiSystem\\EDI315Parser\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\VishantNileshkumarSh\\AppData\\Roaming\\NuGet\\NuGet.Config",

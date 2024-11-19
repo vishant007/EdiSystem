@@ -4104,11 +4104,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\EDI315Parser\\EDI315Parser.csproj",
+      "projectUniqueName": "D:\\EdiSystem\\EDI315Parser\\EDI315Parser.csproj",
       "projectName": "EDI315Parser",
-      "projectPath": "D:\\EDI315Parser\\EDI315Parser.csproj",
+      "projectPath": "D:\\EdiSystem\\EDI315Parser\\EDI315Parser.csproj",
       "packagesPath": "C:\\Users\\VishantNileshkumarSh\\.nuget\\packages\\",
-      "outputPath": "D:\\EDI315Parser\\obj\\",
+      "outputPath": "D:\\EdiSystem\\EDI315Parser\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\VishantNileshkumarSh\\AppData\\Roaming\\NuGet\\NuGet.Config",
