@@ -41,13 +41,31 @@ namespace EDI315Parser.Services
             DateTime = DateTimeHelper.ParseDateTime($"{lineData.ElementAtOrDefault(4)} {lineData.ElementAtOrDefault(5)}") ?? DateTime.MinValue
         };
 
-        public static R4 ParseR4Segment(string[] lineData) => new R4
+        public static R4 ParseR4Segment(string[] lineData, R4 r4)
         {
-            Port_Or_Terminal_Function_Code = lineData.ElementAtOrDefault(1)?.Trim(),
-            Location_Qualifier = lineData.ElementAtOrDefault(2)?.Trim(),
-            Location_Identifier = lineData.ElementAtOrDefault(3)?.Trim(),
-            Port_Name = lineData.ElementAtOrDefault(4)?.Trim()
-        };
+            foreach(var line in lineData) {
+                Console.Write(line + " ");
+            }
+
+            if (lineData.Length > 4)
+            {
+                if (lineData[1] == "L")
+                {
+                    r4.Loading_Location = lineData.ElementAtOrDefault(4)?.Trim();
+                    
+                }
+
+                else if (lineData[1] == "D")
+                {
+                    r4.Destination = lineData.ElementAtOrDefault(4)?.Trim();
+                    
+                }
+
+
+            return r4;
+        }
+
+
 
         public static SE ParseSESegment(string[] lineData) => new SE
         {

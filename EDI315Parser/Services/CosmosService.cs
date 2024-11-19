@@ -13,7 +13,7 @@ namespace EDI315Parser.Services
         private const string databaseId = "EDIParserDatabase";
         private const string containerId = "EDIParserContainer";
 
-        // Initializes CosmosClient and Container
+      
         public static async Task InitializeAsync(string endpointUri, string primaryKey)
         {
             cosmosClient = new CosmosClient(endpointUri, primaryKey);
@@ -22,13 +22,13 @@ namespace EDI315Parser.Services
             Console.WriteLine("Cosmos DB Initialized.");
         }
 
-        // Adds data to Cosmos DB using the PartitionKey from MsgData
+        
         public static async Task AddDataAsync(MsgData msgData)
         {
             try
             {
-                msgData.id = Guid.NewGuid().ToString();  // Generate new ID for each document
-                // Create the item in Cosmos DB with the correct PartitionKey
+                msgData.id = Guid.NewGuid().ToString();  
+                
                 await container.CreateItemAsync(msgData, new PartitionKey(msgData.PartitionKey));
                 Console.WriteLine("Data added to Cosmos DB.");
             }
@@ -38,12 +38,12 @@ namespace EDI315Parser.Services
             }
         }
 
-        // Push data to Cosmos DB with the PartitionKey from MsgData
+        
         public static async Task PushDataToCosmos(MsgData msgData)
         {
             try
             {
-                // Push data using PartitionKey from MsgData class
+                
                 await container.CreateItemAsync(msgData, new PartitionKey(msgData.PartitionKey));
                 Console.WriteLine("Data pushed to Cosmos DB.");
             }

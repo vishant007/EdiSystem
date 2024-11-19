@@ -14,6 +14,9 @@ namespace EDI315Parser
         private const string DatabaseName = "EDIParserDatabase";
         private const string ContainerName = "EDIParserContainer";
 
+        private static readonly string sourceFolder = "D:/project-docs";  // Folder to watch
+        private static readonly string processedFolder = "D:/processed-edi"; // Folder for processed files
+
         public static async Task Main(string[] args)
         {
             Console.WriteLine("EDI 315 Parser Application Starting...");
@@ -21,25 +24,41 @@ namespace EDI315Parser
             // Initialize Cosmos DB
             await CosmosService.InitializeAsync(EndpointUri, PrimaryKey);
 
-            // Specify the EDI file path
-            var ediFilePath = "D:/project-docs/Sample.txt";
-
-            if (!File.Exists(ediFilePath))
+            // Ensure the processed folder exists
+            if (!Directory.Exists(processedFolder))
             {
-                Console.WriteLine("EDI file not found. Please check the file path.");
+                Directory.CreateDirectory(processedFolder);
+            }
+
+            // Get all .txt files in the project-docs folder
+            var ediFiles = Directory.GetFiles(sourceFolder, "*.txt");
+
+            if (ediFiles.Length == 0)
+            {
+                Console.WriteLine("No EDI files found to process.");
                 return;
             }
 
-            // Read and parse the EDI file
-            await ProcessEdiFile(ediFilePath);
+            // Process each file in the folder
+            foreach (var file in ediFiles)
+            {
+                Console.WriteLine($"Processing file: {file}");
+                await ProcessEdiFile(file);
 
-            Console.WriteLine("EDI 315 Parser Application Completed.");
+                // Move the processed file to the 'processed-edi' folder
+                // string processedFilePath = Path.Combine(processedFolder, Path.GetFileName(file));
+                // File.Move(file, processedFilePath);
+                // Console.WriteLine($"File processed and moved to: {processedFilePath}");
+            }
+
+            Console.WriteLine("All files processed and moved to the processed-edi folder.");
         }
 
         private static async Task ProcessEdiFile(string filePath)
         {
             string[] fileData = await File.ReadAllLinesAsync(filePath);
             MsgData msgData = null;
+            R4 r4 = new R4();
 
             foreach (string line in fileData)
             {
@@ -69,14 +88,16 @@ namespace EDI315Parser
                         break;
 
                     case "R4":
-                        if (msgData != null) msgData.r4Segment = SegmentParserService.ParseR4Segment(lineData);
+                        if (msgData != null)
+                        {
+                            msgData.r4Segment = SegmentParserService.ParseR4Segment(lineData, r4);
+                        }
                         break;
-
                     case "SE":
                         if (msgData != null)
                         {
                             msgData.seSegment = SegmentParserService.ParseSESegment(lineData);
-                            await CosmosService.PushDataToCosmos(msgData); // Push the complete MsgData object to Cosmos DB
+                            await CosmosService.PushDataToCosmos(msgData);
                             msgData = null;
                         }
                         break;
@@ -92,26 +113,6 @@ namespace EDI315Parser
             }
 
             Console.WriteLine("All segments processed and data pushed to Cosmos DB.");
-        }
-
-        private static async Task SaveSegmentToDatabase<T>(string segmentType, T segment)
-        {
-            try
-            {
-                var msgData = new MsgData
-                {
-                    id = Guid.NewGuid().ToString(),
-                    SegmentType = segmentType,
-                    SegmentData = segment
-                };
-
-                await CosmosService.PushDataToCosmos(msgData);  // Push MsgData to Cosmos DB
-                Console.WriteLine($"Segment {segmentType} saved to database.");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error saving segment to database: {ex.Message}");
-            }
         }
     }
 }
