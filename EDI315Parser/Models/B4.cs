@@ -7,6 +7,6 @@ namespace EDI315Parser.Models
         public string EquipmentStatusCode { get; set; }
         public string EquipmentType { get; set; }
         public string ContainerNumber { get; set; }
-        public DateTime DateTime { get; set; }  // DateTime for date and time
+        public DateOnly Date { get; set; }
     }
 }

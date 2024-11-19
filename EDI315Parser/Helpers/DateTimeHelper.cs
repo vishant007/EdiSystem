@@ -4,9 +4,16 @@ namespace EDI315Parser.Helpers
 {
     public static class DateTimeHelper
     {
-        public static DateTime? ParseDateTime(string dateTimeStr)
+        public static DateOnly ParseDateOnly(string dateStr)
         {
-            return DateTime.TryParse(dateTimeStr, out DateTime result) ? result : null;
+            if (DateTime.TryParseExact(dateStr, "yyyyMMdd", null, System.Globalization.DateTimeStyles.None, out var dateTime))
+            {
+                return DateOnly.FromDateTime(dateTime);  // Convert DateTime to DateOnly
+            }
+            else
+            {
+                return default;  // Return default DateOnly (0001-01-01) if parsing fails
+            }
         }
     }
 }

@@ -19,7 +19,7 @@ namespace EDI315Parser.Services
             EquipmentStatusCode = lineData.ElementAtOrDefault(8)?.Trim(),
             EquipmentType = lineData.ElementAtOrDefault(9)?.Trim(),
             ContainerNumber = $"{lineData.ElementAtOrDefault(7)?.Trim()}{lineData.ElementAtOrDefault(8)?.Trim()}",
-            DateTime = DateTimeHelper.ParseDateTime($"{lineData.ElementAtOrDefault(4)} {lineData.ElementAtOrDefault(5)}") ?? DateTime.MinValue
+            Date = DateTimeHelper.ParseDateOnly(lineData.ElementAtOrDefault(4))  // Use helper method here
         };
 
         public static N9 ParseN9Segment(string[] lineData) => new N9
@@ -38,12 +38,11 @@ namespace EDI315Parser.Services
         public static SG ParseSGSegment(string[] lineData) => new SG
         {
             Shipment_Status_Code = lineData.ElementAtOrDefault(1)?.Trim(),
-            DateTime = DateTimeHelper.ParseDateTime($"{lineData.ElementAtOrDefault(4)} {lineData.ElementAtOrDefault(5)}") ?? DateTime.MinValue
+            Date = DateTimeHelper.ParseDateOnly(lineData.ElementAtOrDefault(4))  // Use helper method here
         };
 
         public static R4 ParseR4Segment(string[] lineData, R4 r4)
         {
-
             if (lineData.Length > 4)
             {
                 if (lineData[1] == "L")
