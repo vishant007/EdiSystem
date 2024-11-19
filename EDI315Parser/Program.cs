@@ -101,14 +101,6 @@ namespace EDI315Parser
                             msgData = null;
                         }
                         break;
-
-                    case "GE":
-                        if (msgData != null) msgData.geSegment = SegmentParserService.ParseGESegment(lineData);
-                        break;
-
-                    case "IEA":
-                        if (msgData != null) msgData.ieaSegment = SegmentParserService.ParseIEASegment(lineData);
-                        break;
                 }
             }
 

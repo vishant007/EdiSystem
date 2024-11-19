@@ -13,9 +13,6 @@ namespace EDI315Parser.Models
         public SG sgSegment { get; set; }
         public R4 r4Segment { get; set; }
         public SE seSegment { get; set; }
-        public GE geSegment { get; set; }
-        public IEA ieaSegment { get; set; }
-
         public string SegmentType { get; set; }  
         public object SegmentData { get; set; } 
     }

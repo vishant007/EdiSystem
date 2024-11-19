@@ -64,16 +64,5 @@ namespace EDI315Parser.Services
             Transaction_Set_Control_Number = lineData.ElementAtOrDefault(2)?.Trim()
         };
 
-        public static GE ParseGESegment(string[] lineData) => new GE
-        {
-            Number_Of_Transaction_Sets_Included = int.TryParse(lineData.ElementAtOrDefault(1)?.Trim(), out var count) ? count : 0,
-            Group_Control_Number = lineData.ElementAtOrDefault(2)?.Trim()
-        };
-
-        public static IEA ParseIEASegment(string[] lineData) => new IEA
-        {
-            Number_Of_Included_Functional_Groups = int.TryParse(lineData.ElementAtOrDefault(1)?.Trim(), out var count) ? count : 0,
-            Interchange_Control_Number = lineData.ElementAtOrDefault(2)?.Trim()
-        };
     }
 }
