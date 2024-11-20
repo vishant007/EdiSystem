@@ -21,12 +21,36 @@ namespace EDI315Parser.Services
             ContainerNumber = $"{lineData.ElementAtOrDefault(7)?.Trim()}{lineData.ElementAtOrDefault(8)?.Trim()}",
             Date = DateTimeHelper.ParseDateOnly(lineData.ElementAtOrDefault(4))  // Use helper method here
         };
-
-        public static N9 ParseN9Segment(string[] lineData) => new N9
+        
+        public static N9 ParseN9Segment(string[] lineData, MsgData msgData)
         {
-            Reference_Identification_Qualifier = lineData.ElementAtOrDefault(1)?.Trim(),
-            Reference_Identification = lineData.ElementAtOrDefault(2)?.Trim()
-        };
+            var n9 = new N9
+            {
+                ReferenceCode = lineData.ElementAtOrDefault(1)?.Trim(),
+                FeeType = lineData.ElementAtOrDefault(2)?.Trim(),
+                FeeAmount = decimal.TryParse(lineData.ElementAtOrDefault(2), out var amount) ? amount : 0,
+                FeeUntilDate = DateTime.TryParse(lineData.ElementAtOrDefault(3)?.Trim(), out var parsedDate) ? (DateTime?)parsedDate : null,
+                FeeUntilTime = TimeSpan.TryParse(lineData.ElementAtOrDefault(4)?.Trim(), out var parsedTime) ? (TimeSpan?)parsedTime : null,
+            };
+            if (!string.IsNullOrEmpty(n9.FeeType))
+            {
+                msgData.FeeTypes.Add(n9.FeeType); 
+            }
+            if (n9.ReferenceCode != null)
+            {
+                if (n9.ReferenceCode.StartsWith("4I"))
+                {
+                    msgData.TotalDemurrageFees += n9.FeeAmount;
+                }
+                else if (n9.ReferenceCode == "IGF" || n9.ReferenceCode == "GC") 
+                {
+                    msgData.OtherPayments += n9.FeeAmount;
+                }
+            }
+
+            return n9;
+        }
+
 
         public static Q2 ParseQ2Segment(string[] lineData) => new Q2
         {

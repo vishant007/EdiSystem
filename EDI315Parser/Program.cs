@@ -76,8 +76,16 @@ namespace EDI315Parser
                         break;
 
                     case "N9":
-                        if (msgData != null) msgData.n9Segment = SegmentParserService.ParseN9Segment(lineData);
+                        if (msgData != null)
+                        {
+                            // Assuming ParseN9Segment parses the N9 segment and modifies msgData or returns a string
+                            var n9Segment = SegmentParserService.ParseN9Segment(lineData, msgData);
+
+                            // Add the parsed N9 segment to the n9Segments list
+                            msgData.n9Segments.Add(n9Segment);
+                        }
                         break;
+
 
                     case "Q2":
                         if (msgData != null) msgData.q2Segment = SegmentParserService.ParseQ2Segment(lineData);

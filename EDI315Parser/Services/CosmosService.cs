@@ -43,6 +43,7 @@ namespace EDI315Parser.Services
         {
             try
             {
+
                 var flatData = new
                 {
                     id = msgData.id,
@@ -55,20 +56,20 @@ namespace EDI315Parser.Services
                     EquipmentType = msgData.b4Segment.EquipmentType,
                     ContainerNumber = msgData.b4Segment.ContainerNumber,
                     Date = msgData.b4Segment.Date,
-                    ReferenceIdentificationQualifier = msgData.n9Segment.Reference_Identification_Qualifier,
-                    ReferenceIdentification = msgData.n9Segment.Reference_Identification,
+                    TotalDemurrageFees = msgData.TotalDemurrageFees,
+                    OtherPayments = msgData.OtherPayments,
                     VesselCode = msgData.q2Segment.Vessel_Code,
                     FlightNumber = msgData.q2Segment.Flight_Number,
                     VesselName = msgData.q2Segment.Vessel_Name,
                     ShipmentStatusCodeSG = msgData.sgSegment.Shipment_Status_Code,
-                    SGSegmentDate = msgData.sgSegment.Date, 
+                    SGSegmentDate = msgData.sgSegment.Date,
                     LoadingLocation = msgData.r4Segment.Loading_Location,
                     Destination = msgData.r4Segment.Destination,
                     NumberOfIncludedSegments = msgData.seSegment.Number_Of_Included_Segments,
                     SETransactionSetControlNumber = msgData.seSegment.Transaction_Set_Control_Number
                 };
 
-            
+
                 await container.CreateItemAsync(flatData, new PartitionKey(msgData.PartitionKey));
                 Console.WriteLine("Flattened data pushed to Cosmos DB.");
             }
