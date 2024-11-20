@@ -22,48 +22,48 @@ namespace EDI315Api.Services
         }
 
         // Method to fetch all items with full details
-        public async Task<List<Dictionary<string, object>>> GetAllItemsAsync()
-        {
-            var query = "SELECT * FROM c";
-            var queryIterator = _container.GetItemQueryIterator<JObject>(new QueryDefinition(query));
+        // public async Task<List<Dictionary<string, object>>> GetAllItemsAsync()
+        // {
+        //     var query = "SELECT * FROM c";
+        //     var queryIterator = _container.GetItemQueryIterator<JObject>(new QueryDefinition(query));
 
-            var results = new List<Dictionary<string, object>>();
+        //     var results = new List<Dictionary<string, object>>();
 
-            while (queryIterator.HasMoreResults)
-            {
-                var response = await queryIterator.ReadNextAsync();
+        //     while (queryIterator.HasMoreResults)
+        //     {
+        //         var response = await queryIterator.ReadNextAsync();
 
-                foreach (var item in response)
-                {
-                    var itemData = new Dictionary<string, object>();
+        //         foreach (var item in response)
+        //         {
+        //             var itemData = new Dictionary<string, object>();
 
-                    foreach (var property in item.Properties())
-                    {
-                        if (property.Value is JObject nestedObject)
-                        {
-                            var nestedData = new Dictionary<string, object>();
-                            foreach (var nestedProperty in nestedObject.Properties())
-                            {
-                                nestedData[nestedProperty.Name] = nestedProperty.Value.Type == JTokenType.Null
-                                                                  ? "NULL"
-                                                                  : nestedProperty.Value.ToObject<object>();
-                            }
-                            itemData[property.Name] = nestedData;
-                        }
-                        else
-                        {
-                            itemData[property.Name] = property.Value.Type == JTokenType.Null
-                                                      ? "NULL"
-                                                      : property.Value.ToObject<object>();
-                        }
-                    }
+        //             foreach (var property in item.Properties())
+        //             {
+        //                 if (property.Value is JObject nestedObject)
+        //                 {
+        //                     var nestedData = new Dictionary<string, object>();
+        //                     foreach (var nestedProperty in nestedObject.Properties())
+        //                     {
+        //                         nestedData[nestedProperty.Name] = nestedProperty.Value.Type == JTokenType.Null
+        //                                                           ? "NULL"
+        //                                                           : nestedProperty.Value.ToObject<object>();
+        //                     }
+        //                     itemData[property.Name] = nestedData;
+        //                 }
+        //                 else
+        //                 {
+        //                     itemData[property.Name] = property.Value.Type == JTokenType.Null
+        //                                               ? "NULL"
+        //                                               : property.Value.ToObject<object>();
+        //                 }
+        //             }
 
-                    results.Add(itemData);
-                }
-            }
+        //             results.Add(itemData);
+        //         }
+        //     }
 
-            return results;
-        }
+        //     return results;
+        // }
 
 
         // Method specifically to fetch only ContainerNumber for the Watchlist

@@ -34,13 +34,11 @@ namespace EDI315Api.Controllers
                 return Unauthorized(new { Message = "Invalid email or password!" });
             }
 
-            // Fetch data from Cosmos DB upon successful login
-            var cosmosData = await _cosmosDbService.GetAllItemsAsync();
 
             return Ok(new
             {
                 Token = token,
-                CosmosData = cosmosData
+                
             });
         }
 
