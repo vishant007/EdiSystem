@@ -7,5 +7,6 @@ namespace EDI315Api.Services
     {
         Task<string> Authenticate(User user);
         Task Register(User user);
+        
     }
 }

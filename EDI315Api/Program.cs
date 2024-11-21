@@ -14,6 +14,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowAll", builder =>
+            builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+    });
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -49,5 +54,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.UseCors("AllowAll");
 
 app.Run();

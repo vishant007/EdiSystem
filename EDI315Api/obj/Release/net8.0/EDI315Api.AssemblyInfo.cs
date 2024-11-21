@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EDI315Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+30053eae9b0f89b222cc0779517504c49f90ce34")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6a1ed3473f544ee06672c9821769c747887c727f")]
 [assembly: System.Reflection.AssemblyProductAttribute("EDI315Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EDI315Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

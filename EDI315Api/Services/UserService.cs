@@ -36,7 +36,8 @@ namespace EDI315Api.Services
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Email, existingUser.Email)
+                    new Claim(ClaimTypes.Email, existingUser.Email),
+                    new Claim(ClaimTypes.NameIdentifier, existingUser.Id.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -50,5 +51,6 @@ namespace EDI315Api.Services
             user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
             await _userRepository.AddUserAsync(user);
         }
+        
     }
 }

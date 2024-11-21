@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EDI315Parser")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+89965be004c244cd6b20422be33a3563045a44ad")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+99893db85c86c163c183726a683a4172189b8a7e")]
 [assembly: System.Reflection.AssemblyProductAttribute("EDI315Parser")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EDI315Parser")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -9,6 +9,7 @@ namespace EDI315Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    
     public class WatchlistController : ControllerBase
     {
         private readonly IWatchlistRepository _watchlistRepository;
