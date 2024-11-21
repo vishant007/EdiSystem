@@ -56,6 +56,7 @@ namespace EDI315Parser.Services
                     EquipmentType = msgData.b4Segment.EquipmentType,
                     ContainerNumber = msgData.b4Segment.ContainerNumber,
                     Date = msgData.b4Segment.Date,
+                    FeeStatus = msgData.FeeStatus,
                     TotalDemurrageFees = msgData.TotalDemurrageFees,
                     OtherPayments = msgData.OtherPayments,
                     VesselCode = msgData.q2Segment.Vessel_Code,

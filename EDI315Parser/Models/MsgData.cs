@@ -8,8 +8,11 @@ namespace EDI315Parser.Models
         public B4 b4Segment { get; set; }
 
         public List<string> FeeTypes { get; set; } = new List<string>();
+
+        public string FeeStatus { get; set; }
         public decimal OtherPayments { get; set; }
         public decimal TotalDemurrageFees { get; set; }
+
         public Q2 q2Segment { get; set; }
         public SG sgSegment { get; set; }
         public R4 r4Segment { get; set; }

@@ -19,9 +19,20 @@ namespace EDI315Parser.Services
             EquipmentStatusCode = lineData.ElementAtOrDefault(8)?.Trim(),
             EquipmentType = lineData.ElementAtOrDefault(9)?.Trim(),
             ContainerNumber = $"{lineData.ElementAtOrDefault(7)?.Trim()}{lineData.ElementAtOrDefault(8)?.Trim()}",
-            Date = DateTimeHelper.ParseDateOnly(lineData.ElementAtOrDefault(4))  // Use helper method here
+            Date = DateTimeHelper.ParseDateOnly(lineData.ElementAtOrDefault(4))
         };
-        
+
+        public static void UpdateFeeStatus(MsgData msgData)
+        {
+            if (msgData.OtherPayments > 0 || msgData.TotalDemurrageFees > 0)
+            {
+                msgData.FeeStatus = "Pending";
+            }
+            else
+            {
+                msgData.FeeStatus = "NA";
+            }
+        }
         public static N9 ParseN9Segment(string[] lineData, MsgData msgData)
         {
             var n9 = new N9
@@ -34,7 +45,7 @@ namespace EDI315Parser.Services
             };
             if (!string.IsNullOrEmpty(n9.FeeType))
             {
-                msgData.FeeTypes.Add(n9.FeeType); 
+                msgData.FeeTypes.Add(n9.FeeType);
             }
             if (n9.ReferenceCode != null)
             {
@@ -42,11 +53,12 @@ namespace EDI315Parser.Services
                 {
                     msgData.TotalDemurrageFees += n9.FeeAmount;
                 }
-                else if (n9.ReferenceCode == "IGF" || n9.ReferenceCode == "GC") 
+                else if (n9.ReferenceCode == "IGF" || n9.ReferenceCode == "GC")
                 {
                     msgData.OtherPayments += n9.FeeAmount;
                 }
             }
+            UpdateFeeStatus(msgData);
 
             return n9;
         }
@@ -62,7 +74,7 @@ namespace EDI315Parser.Services
         public static SG ParseSGSegment(string[] lineData) => new SG
         {
             Shipment_Status_Code = lineData.ElementAtOrDefault(1)?.Trim(),
-            Date = DateTimeHelper.ParseDateOnly(lineData.ElementAtOrDefault(4))  // Use helper method here
+            Date = DateTimeHelper.ParseDateOnly(lineData.ElementAtOrDefault(4))
         };
 
         public static R4 ParseR4Segment(string[] lineData, R4 r4)
