@@ -23,12 +23,17 @@ export class AuthService {
 
   // Save JWT token
   saveToken(token: string): void {
-    localStorage.setItem('jwt_token', token);
+    if (typeof window !== 'undefined' && window.localStorage) {
+      localStorage.setItem('jwt_token', token);
+    }
   }
 
   // Get JWT token
   getToken(): string | null {
-    return localStorage.getItem('jwt_token');
+    if (typeof window !== 'undefined' && window.localStorage) {
+      return localStorage.getItem('jwt_token');
+    }
+    return null;
   }
 
   // Get userId from JWT token
@@ -47,7 +52,9 @@ export class AuthService {
 
   // Remove JWT token
   logout(): void {
-    localStorage.removeItem('jwt_token');
+    if (typeof window !== 'undefined' && window.localStorage) {
+      localStorage.removeItem('jwt_token');
+    }
   }
 
   // Check if user is logged in
@@ -58,8 +65,8 @@ export class AuthService {
   // Add the Auth header for Watchlist service
   getAuthHeaders(): HttpHeaders {
     return new HttpHeaders({
-      'Content-Type': 'text/plain', // Matches backend's expected content type
-      'Authorization': `Bearer ${this.getToken()}` // Add the JWT token in the Authorization header
+      'Content-Type': 'application/json', // Matches backend's expected content type
+      'Authorization': `Bearer ${this.getToken()}`, // Add the JWT token in the Authorization header
     });
   }
 }

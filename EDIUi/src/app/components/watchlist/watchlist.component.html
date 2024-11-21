@@ -1,24 +1,94 @@
 <div class="watchlist-container">
-    <h2>Your Watchlist</h2>
-  
-    <!-- Error message if there is an issue with the watchlist -->
-    <div *ngIf="errorMessage" class="error-message">
-      {{ errorMessage }}
+  <!-- Header with logo and title -->
+  <div class="header">
+    <img src="images/logo.png" alt="Logo" class="logo" />
+    <h1>eModal Community Portal</h1>
+    <button class="icon-button" (click)="openAddContainerModal()">
+      <i class="fa fa-plus"></i>
+    </button>
+    <div class="action-icons">
+      <button class="icon-button" (click)="toggleSearch()">
+        <i class="fa fa-search"></i>
+      </button>
+      <button class="icon-button" (click)="toggleFilter()">
+        <i class="fa fa-filter"></i>
+      </button>
     </div>
-  
-    <!-- Display the list of containers -->
-    <div *ngIf="watchlist.length > 0; else noWatchlist">
-      <ul>
-        <li *ngFor="let container of watchlist">
-          {{ container.name }} ({{ container.containerNumber }})
-        </li>
-      </ul>
-    </div>
-  
-    <!-- If no containers are in the watchlist -->
-    <ng-template #noWatchlist>
-      <p>Your watchlist is empty. Add containers to track them!</p>
-    </ng-template>
-
-    
   </div>
+
+  <!-- Search Bar -->
+  <div *ngIf="showSearch" class="search-bar">
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Search containers..."
+      [(ngModel)]="searchQuery"
+      (input)="filterContainers()"
+    />
+  </div>
+
+  <!-- Filter Options -->
+  <div *ngIf="showFilter" class="filter-dropdown">
+    <label>Filter by Shipment Status:</label>
+    <select class="form-control" [(ngModel)]="selectedStatus" (change)="filterContainers()">
+      <option value="">All</option>
+      <option value="shipped">Shipped</option>
+      <option value="pending">Pending</option>
+    </select>
+  </div>
+
+  <!-- Table -->
+  <div *ngIf="filteredContainers.length > 0; else noWatchlist">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Container Number</th>
+          <th>Transaction Set Identifier</th>
+          <th>Shipment Status</th>
+          <th>Equipment Status</th>
+          <th>Vessel Name</th>
+          <th>Flight Number</th>
+          <th>Loading Location</th>
+          <th>Destination</th>
+          <th>Total Demurrage Fees</th>
+          <th>Other Payments</th>
+          <th>Fee Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let container of filteredContainers">
+          <td>{{ container.ContainerNumber }}</td>
+          <td>{{ container.TransactionSetIdentifierCode }}</td>
+          <td>{{ container.ShipmentStatusCode }}</td>
+          <td>{{ container.EquipmentStatusCode }}</td>
+          <td>{{ container.VesselName }}</td>
+          <td>{{ container.FlightNumber }}</td>
+          <td>{{ container.LoadingLocation }}</td>
+          <td>{{ container.Destination }}</td>
+          <td>{{ container.TotalDemurrageFees }}</td>
+          <td>{{ container.OtherPayments }}</td>
+          <td>{{ container.FeeStatus }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="showAddModal" class="modal">
+    <div class="modal-content">
+      <h3>Add Container to Watchlist</h3>
+      <input
+        type="text"
+        [(ngModel)]="newContainerNumber"
+        placeholder="Enter container number"
+        class="form-control"
+      />
+      <button class="btn btn-primary" (click)="addToWatchlist()">Add</button>
+      <button class="btn btn-secondary" (click)="closeAddModal()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- If no containers are in the watchlist -->
+  <ng-template #noWatchlist>
+    <p>Your watchlist is empty. Add containers to track them!</p>
+  </ng-template>
+</div>

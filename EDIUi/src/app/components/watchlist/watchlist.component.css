@@ -1,0 +1,130 @@
+.watchlist-container {
+  padding: 0;
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  background-color: #f4f4f4;
+  padding: 10px;
+  border-bottom: 2px solid #ddd;
+}
+
+.logo {
+  height: 30px;
+  margin-right: 20px;
+}
+
+h1 {
+  flex-grow: 1;
+  font-size: 24px;
+  color: #333;
+  margin: 0;
+}
+
+.action-icons {
+  display: flex;
+  gap: 10px;
+}
+
+.icon-button {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.icon-button i {
+  color: #555;
+}
+
+.icon-button:hover i {
+  color: #007bff;
+}
+
+.search-bar,
+.filter-dropdown {
+  margin: 10px 0;
+}
+
+.search-bar input,
+.filter-dropdown select {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.table {
+  width: 100%;
+  margin-top: 10px;
+  border-collapse: separate;
+  border-spacing: 0 5px; 
+  background-color: #f9f9f9; 
+  border-radius: 8px; 
+  overflow: hidden;
+}
+
+/* Header row as a single unit */
+.table thead {
+  background-color: #000; 
+  color: #fff; 
+}
+
+/* Header cells */
+.table th {
+  padding: 10px;
+  font-size: 14px; 
+  text-align: left;
+}
+
+/* Body cells */
+.table td {
+  padding: 10px;
+  font-size: 14px;
+  color: #333; 
+  background-color: #fff; 
+  border: none; 
+}
+
+.table th,
+.table td {
+  margin-right: 5px;
+}
+
+.table thead tr {
+  border-radius: 8px 8px 0 0;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  text-align: center;
+}
+
+.modal input {
+  margin-bottom: 10px;
+}
+
+.modal button {
+  margin-top: 10px;
+}
