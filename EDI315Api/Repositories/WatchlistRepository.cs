@@ -28,5 +28,10 @@ namespace EDI315Api.Repositories
                 .Where(w => w.UserId == userId)
                 .ToListAsync();
         }
+        public async Task<bool> RemoveFromWatchlistAsync(string userId, string containerNumber)
+        {
+            var result = await _cosmosDbService.RemoveWatchlistItemAsync(userId, containerNumber);
+            return result;
+        }
     }
 }

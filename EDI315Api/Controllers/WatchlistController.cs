@@ -34,6 +34,19 @@ namespace EDI315Api.Controllers
             await _watchlistRepository.AddToWatchlistAsync(watchlistItem);
             return Ok("Container added to watchlist.");
         }
+        [HttpDelete("{userId}/remove")]
+        public async Task<IActionResult> RemoveFromWatchlist(string userId, [FromBody] string containerNumber)
+        {
+            var result = await _watchlistRepository.RemoveFromWatchlistAsync(userId, containerNumber);
+            if (result)
+            {
+                return Ok("Container removed from watchlist.");
+            }
+            else
+            {
+                return NotFound("Container not found in watchlist.");
+            }
+        }
 
         [HttpGet("{userId}")]
         public async Task<ActionResult<List<WatchlistModel>>> GetUserWatchlist(string userId)
@@ -53,5 +66,6 @@ namespace EDI315Api.Controllers
 
             return Ok(containerDetails);
         }
+
     }
 }
