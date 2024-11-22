@@ -1,6 +1,0 @@
-@EDI315Payment_HostAddress = http://localhost:5244
-
-GET {{EDI315Payment_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
