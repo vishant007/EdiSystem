@@ -8,6 +8,6 @@ namespace EDI315Api.Repositories
     {
         Task AddToWatchlistAsync(WatchlistModel watchlistItem);
         Task<List<WatchlistModel>> GetUserWatchlistAsync(string userId);
-        Task<bool> RemoveFromWatchlistAsync(string userId, string containerNumber);
+        
     }
 }
