@@ -40,6 +40,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<CosmosDbService>();
 builder.Services.AddScoped<IWatchlistRepository, WatchlistRepository>();
+builder.WebHost.UseUrls("http://0.0.0.0:3001");
 
 
 var app = builder.Build();

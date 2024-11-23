@@ -13,6 +13,9 @@
       <button class="icon-button" (click)="toggleFilter()">
         <i class="fa fa-filter"></i>
       </button>
+      <button class="icon-button" routerLink="/cart">
+        <i class="fa fa-shopping-cart"></i>
+      </button>
     </div>
   </div>
 
@@ -53,6 +56,7 @@
           <th>Total Demurrage Fees</th>
           <th>Other Payments</th>
           <th>Fee Status</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -68,6 +72,11 @@
           <td>{{ container.TotalDemurrageFees }}</td>
           <td>{{ container.OtherPayments }}</td>
           <td>{{ container.FeeStatus }}</td>
+          <td>
+            <button class="btn btn-secondary" (click)="addToCart(container)">
+              Add to Cart
+            </button>
+          </td>
         </tr>
       </tbody>
     </table>

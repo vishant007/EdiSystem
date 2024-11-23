@@ -4,13 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
 import { WatchlistComponent } from './components/watchlist/watchlist.component';
+import { CartComponent } from './components/cart/cart.component';
 
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterModule, FormsModule, CommonModule, LoginComponent, WatchlistComponent],
+  imports: [RouterOutlet, RouterModule, FormsModule, CommonModule, LoginComponent, WatchlistComponent, CartComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
   

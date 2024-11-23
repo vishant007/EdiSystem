@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { WatchlistService } from '../../services/watchlist.service';
+import { CartService } from '../../services/cart.service';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -14,6 +15,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class WatchlistComponent implements OnInit {
   watchlist: any[] = [];
+  cart: any[] = []; // Cart items
   containerDetails: any[] = [];
   filteredContainers: any[] = [];
   errorMessage: string = '';
@@ -30,6 +32,7 @@ export class WatchlistComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private watchlistService: WatchlistService,
+    private cartService: CartService,
     private router: Router
   ) {}
 
@@ -99,16 +102,6 @@ export class WatchlistComponent implements OnInit {
     });
   }
 
-  // Open the Add Container modal
-  openAddContainerModal() {
-    this.showAddModal = true;
-  }
-
-  // Close the Add Container modal
-  closeAddModal() {
-    this.showAddModal = false;
-  }
-
   // Add the container to the watchlist
   addToWatchlist() {
     const userId = this.authService.getUserIdFromToken();
@@ -124,5 +117,20 @@ export class WatchlistComponent implements OnInit {
         }
       );
     }
+  }
+
+  // Add a container to the cart
+  addToCart(container: any) {
+    this.cartService.addToCart(container);
+  }
+
+  // Open the Add Container modal
+  openAddContainerModal() {
+    this.showAddModal = true;
+  }
+
+  // Close the Add Container modal
+  closeAddModal() {
+    this.showAddModal = false;
   }
 }
