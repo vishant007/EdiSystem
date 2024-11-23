@@ -1,4 +1,3 @@
-# Use the official .NET SDK image for build and runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 80
@@ -10,7 +9,7 @@ COPY ["EDI315Api/EDI315Api.csproj", "EDI315Api/"]
 RUN dotnet restore "EDI315Api/EDI315Api.csproj"
 COPY . .
 WORKDIR "/src/EDI315Api"
-RUN dotnet build "EDI315Api.csproj" -c Release -o /app/build
+RUN dotnet build "EDI315Api.csproj" 
 
 FROM build AS publish
 RUN dotnet publish "EDI315Api.csproj" -c Release -o /app/publish

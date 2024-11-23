@@ -16,7 +16,7 @@ namespace EDI315Parser
         private const string ContainerName = "EDIParserContainer";
 
         // Azure Service Bus configuration
-        private const string ServiceBusConnectionString = "Endpoint=sb://ahmdtraining.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=VZ5ATwLeF1/6jaD1GJcH/z5nSWfAxaPNa+ASbG/W8Fk=";
+        private const string ServiceBusConnectionString = "Endpoint=sb://paymentstatus.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=g5EHjaRLhW5DNatka/i3Qgdjd4bButS7++ASbOKtvh4=";
         private const string TopicName = "vishant"; // Topic name
         private const string SubscriptionName = "cosmosSub"; // Subscription name
 
