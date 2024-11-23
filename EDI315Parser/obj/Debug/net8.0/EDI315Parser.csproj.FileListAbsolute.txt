@@ -93,3 +93,6 @@ D:\EdiSystem\EDI315Parser\obj\Debug\net8.0\refint\EDI315Parser.dll
 D:\EdiSystem\EDI315Parser\obj\Debug\net8.0\EDI315Parser.pdb
 D:\EdiSystem\EDI315Parser\obj\Debug\net8.0\EDI315Parser.genruntimeconfig.cache
 D:\EdiSystem\EDI315Parser\obj\Debug\net8.0\ref\EDI315Parser.dll
+D:\EdiSystem\EDI315Parser\bin\Debug\net8.0\Azure.Core.Amqp.dll
+D:\EdiSystem\EDI315Parser\bin\Debug\net8.0\Azure.Messaging.ServiceBus.dll
+D:\EdiSystem\EDI315Parser\bin\Debug\net8.0\Microsoft.Azure.Amqp.dll
