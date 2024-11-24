@@ -8,5 +8,6 @@ namespace EDI315Payment.Models
         public string FeeStatus { get; set; }
         public decimal TotalDemurrageFees { get; set; }
         public decimal OtherPayments { get; set; }
+        public string UserId { get; set; }
     }
 }

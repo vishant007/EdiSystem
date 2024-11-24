@@ -20,22 +20,23 @@ namespace EDI315Payment.Controllers
             _serviceBusService = serviceBusService;
         }
 
-        // GET: api/EDI315Payment/{containerNumber}
-        [HttpGet("{containerNumber}")]
-        public async Task<IActionResult> GetPaymentDetails(string containerNumber)
+        // GET: api/EDI315Payment/ServiceBus
+        [HttpGet("ServiceBus")]
+        public async Task<IActionResult> GetServiceBusMessage()
         {
-            var paymentDetails = await _cosmosService.GetPaymentDetailsAsync(containerNumber);
-            if (paymentDetails == null)
+            var msgData = await _serviceBusService.ReceiveMessageAsync();
+            if (msgData == null)
             {
-                return NotFound("Payment details not found.");
+                return NotFound("No message available in Service Bus.");
             }
 
             return Ok(new
             {
-                paymentDetails.ContainerNumber,
-                paymentDetails.FeeStatus,
-                paymentDetails.TotalDemurrageFees,
-                paymentDetails.OtherPayments
+                msgData.UserId,
+                msgData.ContainerNumber,
+                msgData.TotalDemurrageFees,
+                msgData.OtherPayments,
+                msgData.FeeStatus
             });
         }
 
@@ -50,6 +51,15 @@ namespace EDI315Payment.Controllers
 
             try
             {
+                // Fetch message from Service Bus
+                var serviceBusMessage = await _serviceBusService.ReceiveMessageAsync();
+                if (serviceBusMessage == null)
+                {
+                    return NotFound("No message available in Service Bus.");
+                }
+
+                string userId = serviceBusMessage.UserId;
+
                 // Update FeeStatus for all valid requests
                 await _cosmosService.UpdateFeeStatusForMultipleContainersAsync(requests);
 
@@ -60,9 +70,10 @@ namespace EDI315Payment.Controllers
                     var transactionId = Guid.NewGuid().ToString();
                     transactionIds.Add(transactionId);
 
-                    // Send message to Azure Service Bus
+                    // Send message back to Service Bus
                     var message = new
                     {
+                        UserId = userId,
                         TransactionId = transactionId,
                         FeeStatus = "Paid",
                         ContainerNumber = request.ContainerNumber
@@ -72,6 +83,7 @@ namespace EDI315Payment.Controllers
 
                 return Ok(new
                 {
+                    UserId = userId,
                     TransactionIds = transactionIds,
                     Message = "FeeStatus updated for all containers."
                 });
