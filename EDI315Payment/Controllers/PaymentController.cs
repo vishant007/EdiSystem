@@ -13,11 +13,13 @@ namespace EDI315Payment.Controllers
     {
         private readonly CosmosService _cosmosService;
         private readonly AzureServiceBusService _serviceBusService;
+        private readonly SqlService _sqlService;
 
-        public PaymentController(CosmosService cosmosService, AzureServiceBusService serviceBusService)
+        public PaymentController(CosmosService cosmosService, AzureServiceBusService serviceBusService, SqlService sqlService)
         {
             _cosmosService = cosmosService;
             _serviceBusService = serviceBusService;
+            _sqlService = sqlService;
         }
 
         // GET: api/EDI315Payment/ServiceBus
@@ -63,12 +65,25 @@ namespace EDI315Payment.Controllers
                 // Update FeeStatus for all valid requests
                 await _cosmosService.UpdateFeeStatusForMultipleContainersAsync(requests);
 
-                // Generate a list of transaction IDs
+                // Generate a list of transaction IDs and save them to SQL
                 var transactionIds = new List<string>();
                 foreach (var request in requests)
                 {
                     var transactionId = Guid.NewGuid().ToString();
                     transactionIds.Add(transactionId);
+
+                    // Create a SQL transaction record
+                    var transaction = new PaymentSqlTransaction
+                    {
+                        TransactionId = transactionId,
+                        UserId = userId,
+                        TotalDemurrageFees = request.TotalDemurrageFees,
+                        OtherPayments = request.OtherPayments,
+                        TransactionDate = DateTime.UtcNow
+                    };
+
+                    // Save transaction to SQL
+                    await _sqlService.SaveTransactionAsync(transaction);
 
                     // Send message back to Service Bus
                     var message = new
@@ -85,7 +100,7 @@ namespace EDI315Payment.Controllers
                 {
                     UserId = userId,
                     TransactionIds = transactionIds,
-                    Message = "FeeStatus updated for all containers."
+                    Message = "FeeStatus updated for all containers and transactions saved to SQL."
                 });
             }
             catch (Exception ex)
