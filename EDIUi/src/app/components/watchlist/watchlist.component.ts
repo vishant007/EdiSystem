@@ -1,10 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { WatchlistService } from '../../services/watchlist.service';
 import { CartService } from '../../services/cart.service';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { CookieService } from 'ngx-cookie-service'; // Import CookieService
 
 @Component({
   selector: 'app-watchlist',
@@ -29,13 +30,13 @@ export class WatchlistComponent implements OnInit {
   addedToCart: Set<string> = new Set();
 
   expandedRows: { [key: number]: boolean } = {}; // Tracks expanded rows
-  reloadTimeout: any; // Timeout reference for delayed reload
 
   constructor(
     private authService: AuthService,
     private watchlistService: WatchlistService,
     private cartService: CartService,
-    private router: Router
+    private router: Router,
+    private cookieService: CookieService // Inject CookieService
   ) {}
 
   ngOnInit(): void {
@@ -45,9 +46,9 @@ export class WatchlistComponent implements OnInit {
     } else {
       this.router.navigate(['/login']);
     }
-  }
 
-  
+    this.loadCartFromCookies(); // Load cart from cookies
+  }
 
   getWatchlist(userId: string) {
     this.watchlistService.getWatchlist(userId).subscribe(
@@ -81,19 +82,16 @@ export class WatchlistComponent implements OnInit {
     this.expandedRows[index] = !this.expandedRows[index];
   }
 
-  // Toggle the search bar
   toggleSearch() {
     this.showSearch = !this.showSearch;
     this.showFilter = false; // Hide filter if search is shown
   }
 
-  // Toggle the filter dropdown
   toggleFilter() {
     this.showFilter = !this.showFilter;
     this.showSearch = false; // Hide search if filter is shown
   }
 
-  // Filter containers based on search query and status
   filterContainers() {
     this.filteredContainers = this.containerDetails.filter((container) => {
       const matchesSearch =
@@ -107,7 +105,6 @@ export class WatchlistComponent implements OnInit {
     });
   }
 
-  // Add the container to the watchlist
   addToWatchlist() {
     const userId = this.authService.getUserIdFromToken();
     if (userId && this.newContainerNumber) {
@@ -123,12 +120,12 @@ export class WatchlistComponent implements OnInit {
       );
     }
   }
+
   removeFromWatchlist(containerNumber: string) {
     const userId = this.authService.getUserIdFromToken();
     if (userId) {
       this.watchlistService.removeFromWatchlist(userId, containerNumber).subscribe(
         (response) => {
-          // On success, remove the container from the local watchlist
           this.watchlist = this.watchlist.filter((container) => container.containerNumber !== containerNumber);
           this.containerDetails = this.containerDetails.filter((container) => container.ContainerNumber !== containerNumber);
           this.filteredContainers = [...this.containerDetails]; // Update filtered containers
@@ -140,20 +137,41 @@ export class WatchlistComponent implements OnInit {
       );
     }
   }
-  
-  
 
   addToCart(container: any) {
-    this.cartService.addToCart(container);
-    this.addedToCart.add(container.ContainerNumber); // Mark as added to cart
+    if (!this.cart.find((c) => c.ContainerNumber === container.ContainerNumber)) {
+      this.cart.push(container);
+      this.addedToCart.add(container.ContainerNumber); // Mark as added to cart
+      this.saveCartToCookies(); // Save cart to cookies
+    } else {
+      console.log('Container already in cart');
+    }
   }
 
-  // Open the Add Container modal
+  loadCartFromCookies() {
+    const cartData = this.cookieService.get('cart');
+    if (cartData) {
+      try {
+        this.cart = JSON.parse(cartData) || [];
+        this.cart.forEach((item) => this.addedToCart.add(item.ContainerNumber));
+      } catch (error) {
+        console.error('Error parsing cart data from cookies:', error);
+      }
+    }
+  }
+
+  saveCartToCookies() {
+    try {
+      this.cookieService.set('cart', JSON.stringify(this.cart), { expires: 7, path: '/' });
+    } catch (error) {
+      console.error('Error saving cart data to cookies:', error);
+    }
+  }
+
   openAddContainerModal() {
     this.showAddModal = true;
   }
 
-  // Close the Add Container modal
   closeAddModal() {
     this.showAddModal = false;
   }

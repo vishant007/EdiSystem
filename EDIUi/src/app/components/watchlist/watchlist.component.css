@@ -28,14 +28,16 @@ h1 {
 
 .action-icons {
   display: flex;
-  gap: 10px;
+  align-items: center;
+  gap: 15px; /* Add spacing between icons */
 }
 
 .icon-button {
   background: none;
   border: none;
-  font-size: 18px;
+  font-size: 20px;
   cursor: pointer;
+  padding: 5px; /* Add some padding for clickable area */
 }
 
 .icon-button i {
