@@ -9,26 +9,33 @@ namespace EDI315Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-
     public class WatchlistController : ControllerBase
     {
         private readonly IWatchlistRepository _watchlistRepository;
         private readonly CosmosDbService _cosmosDbService;
         private readonly AzureServiceBusService _serviceBusService;
 
-
-
-        public WatchlistController(IWatchlistRepository watchlistRepository, CosmosDbService cosmosDbService, AzureServiceBusService serviceBusService)
+        public WatchlistController(
+            IWatchlistRepository watchlistRepository,
+            CosmosDbService cosmosDbService,
+            AzureServiceBusService serviceBusService)
         {
             _watchlistRepository = watchlistRepository;
             _cosmosDbService = cosmosDbService;
             _serviceBusService = serviceBusService;
-
         }
 
         [HttpPost("{userId}/add")]
         public async Task<IActionResult> AddToWatchlist(string userId, [FromBody] string containerNumber)
         {
+
+            // Check if container is already in the user's watchlist
+            var existingWatchlist = await _watchlistRepository.GetUserWatchlistAsync(userId);
+            if (existingWatchlist != null && existingWatchlist.Exists(w => w.ContainerNumber == containerNumber))
+            {
+                return Conflict($"Container '{containerNumber}' is already in the watchlist for user ID '{userId}'.");
+            }
+
             // Add container to watchlist
             var watchlistItem = new WatchlistModel
             {
@@ -39,6 +46,11 @@ namespace EDI315Api.Controllers
 
             // Fetch additional details from Cosmos DB
             var containerDetails = await _cosmosDbService.GetContainerDetailsAsync(containerNumber);
+            if (containerDetails == null)
+            {
+                return NotFound($"Details for container number {containerNumber} not found in Cosmos DB.");
+            }
+
             var message = new
             {
                 UserId = userId,
@@ -59,9 +71,9 @@ namespace EDI315Api.Controllers
         [HttpPost("{userId}/remove")]
         public async Task<IActionResult> RemoveFromWatchlist(string userId, [FromBody] string containerNumber)
         {
+
             // Remove container from the watchlist
             var isRemoved = await _watchlistRepository.RemoveFromWatchlistAsync(userId, containerNumber);
-            
             if (!isRemoved)
             {
                 return NotFound("Container not found in watchlist.");
@@ -80,13 +92,17 @@ namespace EDI315Api.Controllers
             // Send removal message to Azure Service Bus
             await _serviceBusService.SendMessageAsync(message);
 
-            return Ok("Container removed from watchlist and removal message sent to Service Bus.");
+            return Ok("Container removed from watchlist.");
         }
-    
 
         [HttpGet("{userId}")]
         public async Task<ActionResult<List<WatchlistModel>>> GetUserWatchlist(string userId)
         {
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return BadRequest("User ID cannot be null or empty.");
+            }
+
             var watchlist = await _watchlistRepository.GetUserWatchlistAsync(userId);
             return Ok(watchlist);
         }
@@ -94,6 +110,11 @@ namespace EDI315Api.Controllers
         [HttpGet("details/{containerNumber}")]
         public async Task<IActionResult> GetContainerDetails(string containerNumber)
         {
+            if (string.IsNullOrWhiteSpace(containerNumber))
+            {
+                return BadRequest("Container number cannot be null or empty.");
+            }
+
             var containerDetails = await _cosmosDbService.GetContainerDetailsAsync(containerNumber);
             if (containerDetails == null)
             {
@@ -102,6 +123,5 @@ namespace EDI315Api.Controllers
 
             return Ok(containerDetails);
         }
-
     }
 }

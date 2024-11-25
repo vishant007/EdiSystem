@@ -27,6 +27,11 @@ export class WatchlistService {
       { headers }
     );
   }
+
+  removeFromWatchlist(userId: string, containerNumber: string) {
+    return this.http.delete(`${environment.apiUrl}/watchlist/${userId}/${containerNumber}`);
+  }
+  
   
   
 

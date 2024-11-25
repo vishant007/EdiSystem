@@ -83,6 +83,13 @@
             <span *ngIf="addedToCart.has(container.ContainerNumber)" class="tick-icon">
               <i class="fa fa-check"></i>
             </span>
+              <button
+              class="btn btn-danger"
+             (click)="removeFromWatchlist(container.ContainerNumber)"
+              title="Remove from Watchlist"
+            >
+              <i class="fa fa-trash"></i>
+            </button>
           </td>
         </tr>
       </tbody>

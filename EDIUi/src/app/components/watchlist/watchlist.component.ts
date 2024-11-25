@@ -123,6 +123,24 @@ export class WatchlistComponent implements OnInit {
       );
     }
   }
+  removeFromWatchlist(containerNumber: string) {
+    const userId = this.authService.getUserIdFromToken();
+    if (userId) {
+      this.watchlistService.removeFromWatchlist(userId, containerNumber).subscribe(
+        (response) => {
+          // On success, remove the container from the local watchlist
+          this.watchlist = this.watchlist.filter((container) => container.containerNumber !== containerNumber);
+          this.containerDetails = this.containerDetails.filter((container) => container.ContainerNumber !== containerNumber);
+          this.filteredContainers = [...this.containerDetails]; // Update filtered containers
+          console.log('Container removed from watchlist');
+        },
+        (error) => {
+          this.errorMessage = 'Failed to remove container from watchlist!';
+        }
+      );
+    }
+  }
+  
   
 
   addToCart(container: any) {
