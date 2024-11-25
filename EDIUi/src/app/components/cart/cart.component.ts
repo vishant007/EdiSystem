@@ -47,7 +47,7 @@ export class CartComponent implements OnInit {
 
     // Send a POST request to the backend
     this.http
-      .post('http://localhost:5284/api/Payment/UpdatePayments', paymentData, {
+      .post('http://localhost:4000/api/Payment/UpdatePayments', paymentData, {
         headers: { 'Content-Type': 'application/json' },
       })
       .subscribe({

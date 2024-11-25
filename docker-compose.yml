@@ -24,5 +24,6 @@ services:
       - "4000:8080"  
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
-   
+    depends_on:
+      - db1   
       

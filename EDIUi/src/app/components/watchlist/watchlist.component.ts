@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { WatchlistService } from '../../services/watchlist.service';
 import { CartService } from '../../services/cart.service';
@@ -26,8 +26,10 @@ export class WatchlistComponent implements OnInit {
   showFilter: boolean = false; // Toggle for filter dropdown
   showAddModal: boolean = false; // Toggle for Add container modal
   newContainerNumber: string = ''; // Container number for adding
+  addedToCart: Set<string> = new Set();
 
   expandedRows: { [key: number]: boolean } = {}; // Tracks expanded rows
+  reloadTimeout: any; // Timeout reference for delayed reload
 
   constructor(
     private authService: AuthService,
@@ -45,6 +47,8 @@ export class WatchlistComponent implements OnInit {
     }
   }
 
+  
+
   getWatchlist(userId: string) {
     this.watchlistService.getWatchlist(userId).subscribe(
       (data) => {
@@ -58,6 +62,7 @@ export class WatchlistComponent implements OnInit {
   }
 
   getContainerDetails() {
+    this.containerDetails = []; // Reset container details to avoid duplicate entries
     this.watchlist.forEach((container) => {
       this.watchlistService.getContainerDetails(container.containerNumber).subscribe(
         (data) => {
@@ -109,7 +114,7 @@ export class WatchlistComponent implements OnInit {
       this.watchlistService.addToWatchlist(userId, this.newContainerNumber).subscribe(
         (response) => {
           console.log(response);
-          this.getWatchlist(userId); // Refresh the watchlist
+          this.getWatchlist(userId); // Refresh the watchlist immediately
           this.closeAddModal(); // Close the modal
         },
         (error) => {
@@ -118,10 +123,11 @@ export class WatchlistComponent implements OnInit {
       );
     }
   }
+  
 
-  // Add a container to the cart
   addToCart(container: any) {
     this.cartService.addToCart(container);
+    this.addedToCart.add(container.ContainerNumber); // Mark as added to cart
   }
 
   // Open the Add Container modal

@@ -2,6 +2,8 @@
   padding: 0;
   margin: 0;
   font-family: Arial, sans-serif;
+  max-height: 100vh; 
+  overflow-y: auto; 
 }
 
 .header {
@@ -128,3 +130,17 @@ h1 {
 .modal button {
   margin-top: 10px;
 }
+.btn-watchlist {
+  background-color: #ff0c00;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.btn-watchlist:hover {
+  background-color: #d40b00;
+}
+

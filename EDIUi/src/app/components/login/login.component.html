@@ -1,15 +1,29 @@
-<form (ngSubmit)="login()">
-  <div>
-    <label for="email">Email:</label>
-    <input id="email" type="email" [(ngModel)]="email" name="email" required />
+<div class="bgc center">
+  <div class="container">
+    <div class="header">
+      <h1><span class="l">L</span>OGIN</h1>
+    </div>
+    <form (ngSubmit)="login()">
+      <label for="email">Email:</label>
+      <input
+        id="email"
+        type="email"
+        class="inp"
+        [(ngModel)]="email"
+        name="email"
+        required
+      />
+      <label for="password">Password:</label>
+      <input
+        id="password"
+        type="password"
+        class="inp"
+        [(ngModel)]="password"
+        name="password"
+        required
+      />
+      <button type="submit">Enter</button>
+    </form>
+    <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
   </div>
-
-  <div>
-    <label for="password">Password:</label>
-    <input id="password" type="password" [(ngModel)]="password" name="password" required />
-  </div>
-
-  <button type="submit">Login</button>
-
-  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
-</form>
+</div>

@@ -73,9 +73,16 @@
           <td>{{ container.OtherPayments }}</td>
           <td>{{ container.FeeStatus }}</td>
           <td>
-            <button class="btn btn-secondary" (click)="addToCart(container)">
+            <button
+              *ngIf="!addedToCart.has(container.ContainerNumber)"
+              class="btn btn-watchlist"
+              (click)="addToCart(container)"
+            >
               Add to Cart
             </button>
+            <span *ngIf="addedToCart.has(container.ContainerNumber)" class="tick-icon">
+              <i class="fa fa-check"></i>
+            </span>
           </td>
         </tr>
       </tbody>

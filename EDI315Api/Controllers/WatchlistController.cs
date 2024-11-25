@@ -56,6 +56,34 @@ namespace EDI315Api.Controllers
             return Ok("Container added to watchlist and message sent to Service Bus.");
         }
 
+        [HttpPost("{userId}/remove")]
+        public async Task<IActionResult> RemoveFromWatchlist(string userId, [FromBody] string containerNumber)
+        {
+            // Remove container from the watchlist
+            var isRemoved = await _watchlistRepository.RemoveFromWatchlistAsync(userId, containerNumber);
+            
+            if (!isRemoved)
+            {
+                return NotFound("Container not found in watchlist.");
+            }
+
+            // Fetch additional details from Cosmos DB to notify if necessary
+            var containerDetails = await _cosmosDbService.GetContainerDetailsAsync(containerNumber);
+            var message = new
+            {
+                UserId = userId,
+                ContainerNumber = containerNumber,
+                RemovalStatus = "Container removed from watchlist",
+                ContainerDetails = containerDetails
+            };
+
+            // Send removal message to Azure Service Bus
+            await _serviceBusService.SendMessageAsync(message);
+
+            return Ok("Container removed from watchlist and removal message sent to Service Bus.");
+        }
+    
+
         [HttpGet("{userId}")]
         public async Task<ActionResult<List<WatchlistModel>>> GetUserWatchlist(string userId)
         {

@@ -1,37 +1,105 @@
-/* src/app/login/login.component.css */
-.login-container {
-    width: 300px;
-    padding: 20px;
-    margin: 50px auto;
-    border-radius: 8px;
-    background-color: #ff0c00;
-    color: white;
-    text-align: center;
-  }
+
+
+body {
+  font-family: monospace !important;
+}
+
+/* Centered Layout */
+.bgc {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f4f4f4;
+}
+
+/* Container Styling */
+.container {
+  background-color: #fff;
+  padding: 25px;
+  width: 275px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   
-  h2 {
-    margin-bottom: 20px;
-  }
-  
-  input {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: none;
-    border-radius: 4px;
-  }
-  
-  button {
-    width: 100%;
-    padding: 10px;
-    background-color: white;
-    color: #ff0c00;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  button:disabled {
-    background-color: #ddd;
-  }
-  
+}
+
+/* Header Styling */
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.header h1 {
+  font-size: 24px;
+  color: #000;
+}
+h1 > .l {
+  font-size: 30px;
+  color: #8c0000;
+}
+
+/* Label and Input Styling */
+label {
+  font-weight: 700;
+  font-size: 16px;
+  display: block;
+  margin-top: 10px;
+}
+.inp {
+  font-weight: 500;
+  width: 100%;
+  padding: 8px 10px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 2px solid #132;
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+}
+.inp,
+.inp:focus {
+  outline: none;
+}
+
+/* Button Styling */
+button {
+  background-color: #8c0000;
+  color: white;
+  padding: 12px 20px;
+  margin: 8px 0;
+  width: 100%;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  opacity: 0.925;
+}
+button:hover {
+  opacity: 1;
+}
+
+/* Signup Link Styling */
+.signup {
+  width: 250px;
+  padding: 0 7.5px;
+  text-align: center;
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+.signup a {
+  font-weight: 800;
+  color: #8c0000;
+  text-decoration: none;
+}
+.signup a:hover {
+  text-decoration: underline;
+}
+
+/* Error Message Styling */
+.error {
+  margin-top: 10px;
+  color: red;
+  font-size: 14px;
+}
