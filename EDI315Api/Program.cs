@@ -9,16 +9,23 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200") // Replace with your Angular app URL
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials(); // If cookies or authentication are involved
+    });
+});
+
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddCors(options =>
-    {
-        options.AddPolicy("AllowAll", builder =>
-            builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-    });
+
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -50,12 +57,13 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
+app.UseCors("AllowAngularApp");
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.UseCors("AllowAll");
+
 
 app.Run();

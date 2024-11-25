@@ -3,12 +3,14 @@ using System.Threading.Tasks;
 using EDI315Api.Models;
 using EDI315Api.Repositories;
 using EDI315Api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EDI315Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class WatchlistController : ControllerBase
     {
         private readonly IWatchlistRepository _watchlistRepository;
@@ -78,19 +80,6 @@ namespace EDI315Api.Controllers
             {
                 return NotFound("Container not found in watchlist.");
             }
-
-            // Fetch additional details from Cosmos DB to notify if necessary
-            var containerDetails = await _cosmosDbService.GetContainerDetailsAsync(containerNumber);
-            var message = new
-            {
-                UserId = userId,
-                ContainerNumber = containerNumber,
-                RemovalStatus = "Container removed from watchlist",
-                ContainerDetails = containerDetails
-            };
-
-            // Send removal message to Azure Service Bus
-            await _serviceBusService.SendMessageAsync(message);
 
             return Ok("Container removed from watchlist.");
         }

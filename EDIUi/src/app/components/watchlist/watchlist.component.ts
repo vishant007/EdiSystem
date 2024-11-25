@@ -5,7 +5,7 @@ import { CartService } from '../../services/cart.service';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CookieService } from 'ngx-cookie-service'; // Import CookieService
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-watchlist',
@@ -16,66 +16,37 @@ import { CookieService } from 'ngx-cookie-service'; // Import CookieService
 })
 export class WatchlistComponent implements OnInit {
   watchlist: any[] = [];
-  cart: any[] = []; // Cart items
+  cart: any[] = [];
   containerDetails: any[] = [];
   filteredContainers: any[] = [];
   errorMessage: string = '';
-  searchQuery: string = ''; // For search
-  selectedStatus: string = ''; // For filter
+  searchQuery: string = '';
+  selectedStatus: string = '';
 
-  showSearch: boolean = false; // Toggle for search bar
-  showFilter: boolean = false; // Toggle for filter dropdown
-  showAddModal: boolean = false; // Toggle for Add container modal
-  newContainerNumber: string = ''; // Container number for adding
+  showSearch: boolean = false;
+  showFilter: boolean = false;
+  showAddModal: boolean = false;
+  newContainerNumber: string = '';
   addedToCart: Set<string> = new Set();
 
-  expandedRows: { [key: number]: boolean } = {}; // Tracks expanded rows
+  expandedRows: { [key: number]: boolean } = {};
 
   constructor(
     private authService: AuthService,
     private watchlistService: WatchlistService,
     private cartService: CartService,
     private router: Router,
-    private cookieService: CookieService // Inject CookieService
+    private cookieService: CookieService
   ) {}
 
   ngOnInit(): void {
     const userId = this.authService.getUserIdFromToken();
     if (userId) {
       this.getWatchlist(userId);
+      this.loadCartFromCookies(userId); // Load cart based on userId
     } else {
       this.router.navigate(['/login']);
     }
-
-    this.loadCartFromCookies(); // Load cart from cookies
-  }
-
-  getWatchlist(userId: string) {
-    this.watchlistService.getWatchlist(userId).subscribe(
-      (data) => {
-        this.watchlist = data;
-        this.getContainerDetails();
-      },
-      (error) => {
-        this.errorMessage = 'Failed to fetch watchlist!';
-      }
-    );
-  }
-
-  getContainerDetails() {
-    this.containerDetails = []; // Reset container details to avoid duplicate entries
-    this.watchlist.forEach((container) => {
-      this.watchlistService.getContainerDetails(container.containerNumber).subscribe(
-        (data) => {
-          console.log(data);
-          this.containerDetails.push(data);
-          this.filteredContainers = [...this.containerDetails]; // Initialize filtered list
-        },
-        (error) => {
-          this.errorMessage = 'Failed to fetch container details!';
-        }
-      );
-    });
   }
 
   toggleRow(index: number): void {
@@ -105,14 +76,43 @@ export class WatchlistComponent implements OnInit {
     });
   }
 
+  getWatchlist(userId: string) {
+    const headers = this.authService.getAuthHeaders(); // Get Auth Headers
+    this.watchlistService.getWatchlist(userId).subscribe(
+      (data) => {
+        this.watchlist = data;
+        this.getContainerDetails(headers); // Pass headers for container details
+      },
+      (error) => {
+        this.errorMessage = 'Failed to fetch watchlist!';
+      }
+    );
+  }
+
+  getContainerDetails(headers: any) {
+    this.containerDetails = [];
+    this.watchlist.forEach((container) => {
+      this.watchlistService.getContainerDetails(container.containerNumber).subscribe(
+        (data) => {
+          this.containerDetails.push(data);
+          this.filteredContainers = [...this.containerDetails];
+        },
+        (error) => {
+          this.errorMessage = 'Failed to fetch container details!';
+        }
+      );
+    });
+  }
+
   addToWatchlist() {
     const userId = this.authService.getUserIdFromToken();
     if (userId && this.newContainerNumber) {
       this.watchlistService.addToWatchlist(userId, this.newContainerNumber).subscribe(
         (response) => {
           console.log(response);
-          this.getWatchlist(userId); // Refresh the watchlist immediately
-          this.closeAddModal(); // Close the modal
+          // Refresh the watchlist without reloading the page
+          this.getWatchlist(userId);
+          this.closeAddModal();
         },
         (error) => {
           this.errorMessage = 'Failed to add container to watchlist!';
@@ -121,18 +121,21 @@ export class WatchlistComponent implements OnInit {
     }
   }
 
+  loading: boolean = false;
+
   removeFromWatchlist(containerNumber: string) {
     const userId = this.authService.getUserIdFromToken();
     if (userId) {
+      this.loading = true;
       this.watchlistService.removeFromWatchlist(userId, containerNumber).subscribe(
         (response) => {
-          this.watchlist = this.watchlist.filter((container) => container.containerNumber !== containerNumber);
-          this.containerDetails = this.containerDetails.filter((container) => container.ContainerNumber !== containerNumber);
-          this.filteredContainers = [...this.containerDetails]; // Update filtered containers
-          console.log('Container removed from watchlist');
+          console.log(response);
+          this.getWatchlist(userId);
+          this.loading = false;
         },
         (error) => {
           this.errorMessage = 'Failed to remove container from watchlist!';
+          this.loading = false;
         }
       );
     }
@@ -141,15 +144,18 @@ export class WatchlistComponent implements OnInit {
   addToCart(container: any) {
     if (!this.cart.find((c) => c.ContainerNumber === container.ContainerNumber)) {
       this.cart.push(container);
-      this.addedToCart.add(container.ContainerNumber); // Mark as added to cart
-      this.saveCartToCookies(); // Save cart to cookies
+      this.addedToCart.add(container.ContainerNumber);
+      const userId = this.authService.getUserIdFromToken();
+      if (userId) {
+        this.saveCartToCookies(userId); // Save cart to cookies based on userId
+      }
     } else {
       console.log('Container already in cart');
     }
   }
 
-  loadCartFromCookies() {
-    const cartData = this.cookieService.get('cart');
+  loadCartFromCookies(userId: string) {
+    const cartData = this.cookieService.get(`cart_${userId}`);
     if (cartData) {
       try {
         this.cart = JSON.parse(cartData) || [];
@@ -160,9 +166,9 @@ export class WatchlistComponent implements OnInit {
     }
   }
 
-  saveCartToCookies() {
+  saveCartToCookies(userId: string) {
     try {
-      this.cookieService.set('cart', JSON.stringify(this.cart), { expires: 7, path: '/' });
+      this.cookieService.set(`cart_${userId}`, JSON.stringify(this.cart), { expires: 7, path: '/' });
     } catch (error) {
       console.error('Error saving cart data to cookies:', error);
     }

@@ -3,7 +3,6 @@ using System.IO;
 using System.Threading.Tasks;
 using EDI315Parser.Services;
 using EDI315Parser.Models;
-using Azure.Messaging.ServiceBus;
 
 namespace EDI315Parser
 {
@@ -15,11 +14,6 @@ namespace EDI315Parser
         private const string DatabaseName = "EDIParserDatabase";
         private const string ContainerName = "EDIParserContainer";
 
-        // Azure Service Bus configuration
-        private const string ServiceBusConnectionString = "Endpoint=sb://paymentstatus.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=g5EHjaRLhW5DNatka/i3Qgdjd4bButS7++ASbOKtvh4=";
-        private const string TopicName = "vishant"; // Topic name
-        private const string SubscriptionName = "cosmosSub"; // Subscription name
-
         private static readonly string sourceFolder = "D:/project-docs";  // Folder to watch
         private static readonly string processedFolder = "D:/processed-edi"; // Folder for processed files
 
@@ -29,10 +23,6 @@ namespace EDI315Parser
 
             // Initialize Cosmos DB
             await CosmosService.InitializeAsync(EndpointUri, PrimaryKey);
-
-            // Initialize Service Bus Client
-            var serviceBusClient = new ServiceBusClient(ServiceBusConnectionString);
-            var sender = serviceBusClient.CreateSender(TopicName);
 
             // Ensure the processed folder exists
             if (!Directory.Exists(processedFolder))
@@ -53,7 +43,7 @@ namespace EDI315Parser
             foreach (var file in ediFiles)
             {
                 Console.WriteLine($"Processing file: {file}");
-                await ProcessEdiFile(file, sender);
+                await ProcessEdiFile(file);
 
                 // Move the processed file to the 'processed-edi' folder
                 // string processedFilePath = Path.Combine(processedFolder, Path.GetFileName(file));
@@ -64,7 +54,7 @@ namespace EDI315Parser
             Console.WriteLine("All files processed and moved to the processed-edi folder.");
         }
 
-        private static async Task ProcessEdiFile(string filePath, ServiceBusSender sender)
+        private static async Task ProcessEdiFile(string filePath)
         {
             string[] fileData = await File.ReadAllLinesAsync(filePath);
             MsgData msgData = null;
@@ -114,21 +104,7 @@ namespace EDI315Parser
                             msgData.seSegment = SegmentParserService.ParseSESegment(lineData);
                             await CosmosService.PushDataToCosmos(msgData);
 
-                            // Send data to Azure Service Bus Topic
-                            var message = new ServiceBusMessage
-                            {
-                                ContentType = "application/json",
-                                Body = new BinaryData(new
-                                {
-                                    ContainerNumber = msgData.b4Segment.ContainerNumber,
-                                    TotalDemurrageFees = msgData.TotalDemurrageFees,
-                                    OtherPayments = msgData.OtherPayments,
-                                    FeeStatus = msgData.FeeStatus
-                                })
-                            };
-                            await sender.SendMessageAsync(message);
-                            Console.WriteLine("Message sent to Service Bus.");
-
+                            // Removed Service Bus message-sending logic
                             msgData = null;
                         }
                         break;

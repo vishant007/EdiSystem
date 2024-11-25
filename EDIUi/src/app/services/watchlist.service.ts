@@ -27,16 +27,18 @@ export class WatchlistService {
       { headers }
     );
   }
+  
 
-  removeFromWatchlist(userId: string, containerNumber: string) {
-    return this.http.delete(`${environment.apiUrl}/watchlist/${userId}/${containerNumber}`);
+  removeFromWatchlist(userId: string, containerNumber: string): Observable<any> {
+    const headers = this.authService.getAuthHeaders(); // Use authService to get headers
+    return this.http.post(
+      `${this.apiUrl}/api/watchlist/${userId}/remove`,
+      JSON.stringify(containerNumber), // Send as a raw JSON string
+      { headers }
+    );
   }
   
-  
-  
-
-  // Get container details by container number
-  getContainerDetails(containerNumber: string): Observable<any> {
+   getContainerDetails(containerNumber: string): Observable<any> {
     const headers = this.authService.getAuthHeaders(); // Use authService to get headers
     return this.http.get(`${this.apiUrl}/api/watchlist/details/${containerNumber}`, { headers });
   }
