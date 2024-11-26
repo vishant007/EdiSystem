@@ -65,6 +65,27 @@
   margin-top: 30px;
 }
 
+.btn-remove {
+  background-color: #ff4c4c;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-remove:hover {
+  background-color: #cc0000;
+  transform: scale(1.1); /* Slight zoom effect */
+}
+
+/* Trash icon styling */
+.btn-remove i {
+  font-size: 18px; /* Slightly larger icon size */
+}
+
 .btn-submit {
   background-color: #FF0C00;
   color: white;

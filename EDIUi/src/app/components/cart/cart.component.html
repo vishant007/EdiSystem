@@ -13,6 +13,15 @@
         <td>{{ item.ContainerNumber }}</td>
         <td>${{ item.TotalDemurrageFees }}</td>
         <td>${{ item.OtherPayments }}</td>
+        <td>
+          <button
+            (click)="removeItem(item.ContainerNumber)"
+            class="btn btn-danger btn-remove"
+            title="Remove Item"
+          >
+            <i class="fa fa-trash"></i>
+          </button>
+        </td>
       </tr>
       <!-- Total row -->
       <tr class="total-row">

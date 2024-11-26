@@ -5,6 +5,8 @@ import { CartService } from '../../services/cart.service';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { forkJoin } from 'rxjs';
+import { ChangeDetectorRef } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 
 @Component({
@@ -22,6 +24,7 @@ export class WatchlistComponent implements OnInit {
   errorMessage: string = '';
   searchQuery: string = '';
   selectedStatus: string = '';
+  selectedFeeStatus: string = '';
 
   showSearch: boolean = false;
   showFilter: boolean = false;
@@ -36,7 +39,8 @@ export class WatchlistComponent implements OnInit {
     private watchlistService: WatchlistService,
     private cartService: CartService,
     private router: Router,
-    private cookieService: CookieService
+    private cookieService: CookieService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -72,75 +76,91 @@ export class WatchlistComponent implements OnInit {
       const matchesStatus =
         this.selectedStatus === '' || container.ShipmentStatusCode === this.selectedStatus;
 
-      return matchesSearch && matchesStatus;
+      const matchesFeeStatus =
+        this.selectedFeeStatus === '' || container.FeeStatus === this.selectedFeeStatus;
+
+      return matchesSearch && matchesStatus && matchesFeeStatus;
     });
   }
+  loading: boolean = false; // For displaying the loader
+
 
   getWatchlist(userId: string) {
     const headers = this.authService.getAuthHeaders(); // Get Auth Headers
+    this.loading = true; // Start loader
     this.watchlistService.getWatchlist(userId).subscribe(
       (data) => {
-        this.watchlist = data;
-        this.getContainerDetails(headers); // Pass headers for container details
+        this.watchlist = data; // Update watchlist
+        // If the watchlist is empty, stop the loader
+        if (this.watchlist.length === 0) {
+          this.loading = false;
+        }
+        this.getContainerDetails(headers); // Fetch container details
+        this.cdr.detectChanges(); // Trigger change detection manually
       },
       (error) => {
         this.errorMessage = 'Failed to fetch watchlist!';
+        this.loading = false; // Stop loader in case of error
       }
     );
   }
-
+  
   getContainerDetails(headers: any) {
-    this.containerDetails = [];
-    this.watchlist.forEach((container) => {
-      this.watchlistService.getContainerDetails(container.containerNumber).subscribe(
-        (data) => {
-          this.containerDetails.push(data);
-          this.filteredContainers = [...this.containerDetails];
-        },
-        (error) => {
-          this.errorMessage = 'Failed to fetch container details!';
-        }
-      );
-    });
+    this.containerDetails = []; // Clear existing container details
+    const observables = this.watchlist.map((container) =>
+      this.watchlistService.getContainerDetails(container.containerNumber)
+    );
+  
+    // Use `forkJoin` to wait for all API calls to complete
+    forkJoin(observables).subscribe(
+      (data) => {
+        this.containerDetails = data; // Populate container details
+        this.filteredContainers = [...this.containerDetails];
+        this.loading = false; // Stop loader
+        this.cdr.detectChanges(); // Ensure UI refreshes
+      },
+      (error) => {
+        this.errorMessage = 'Failed to fetch container details!';
+        this.loading = false; // Stop loader in case of error
+      }
+    );
   }
-
+  
   addToWatchlist() {
     const userId = this.authService.getUserIdFromToken();
     if (userId && this.newContainerNumber) {
+      this.loading = true; // Show loader during add operation
       this.watchlistService.addToWatchlist(userId, this.newContainerNumber).subscribe(
         (response) => {
-          console.log(response);
-          // Refresh the watchlist without reloading the page
-          this.getWatchlist(userId);
+          this.getWatchlist(userId); // Refresh watchlist after addition
           this.closeAddModal();
+          this.cdr.detectChanges(); // Trigger change detection
         },
         (error) => {
           this.errorMessage = 'Failed to add container to watchlist!';
+          this.loading = false; // Stop loader in case of error
         }
       );
     }
   }
-
-  loading: boolean = false;
-
+  
   removeFromWatchlist(containerNumber: string) {
     const userId = this.authService.getUserIdFromToken();
     if (userId) {
-      this.loading = true;
+      this.loading = true; // Show loader during removal operation
       this.watchlistService.removeFromWatchlist(userId, containerNumber).subscribe(
         (response) => {
-          console.log(response);
-          this.getWatchlist(userId);
-          this.loading = false;
+          this.getWatchlist(userId); // Refresh watchlist after removal
+          this.cdr.detectChanges(); // Ensure the UI updates
         },
         (error) => {
           this.errorMessage = 'Failed to remove container from watchlist!';
-          this.loading = false;
+          this.loading = false; // Stop loader in case of error
         }
       );
     }
   }
-
+  
   addToCart(container: any) {
     if (!this.cart.find((c) => c.ContainerNumber === container.ContainerNumber)) {
       this.cart.push(container);

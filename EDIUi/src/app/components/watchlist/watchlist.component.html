@@ -1,3 +1,7 @@
+<div *ngIf="loading" class="loader-overlay">
+  <div class="spinner"></div>
+</div>
+
 <div class="watchlist-container">
   <!-- Header with logo and title -->
   <div class="header">
@@ -32,13 +36,14 @@
 
   <!-- Filter Options -->
   <div *ngIf="showFilter" class="filter-dropdown">
-    <label>Filter by Shipment Status:</label>
-    <select class="form-control" [(ngModel)]="selectedStatus" (change)="filterContainers()">
+    <label>Filter by Fee Status:</label>
+    <select class="form-control" [(ngModel)]="selectedFeeStatus" (change)="filterContainers()">
       <option value="">All</option>
-      <option value="shipped">Shipped</option>
-      <option value="pending">Pending</option>
+      <option value="Paid">Paid</option>
+      <option value="Pending">Pending</option>
     </select>
   </div>
+  
 
   <!-- Table -->
   <div *ngIf="filteredContainers.length > 0; else noWatchlist">
@@ -73,24 +78,26 @@
           <td>{{ container.OtherPayments }}</td>
           <td>{{ container.FeeStatus }}</td>
           <td>
-            <button
-              *ngIf="!addedToCart.has(container.ContainerNumber)"
-              class="btn btn-watchlist"
-              (click)="addToCart(container)"
-            >
-              Add to Cart
-            </button>
-            <span *ngIf="addedToCart.has(container.ContainerNumber)" class="tick-icon">
-              <i class="fa fa-check"></i>
-            </span>
+            <div class="action-buttons">
               <button
-              class="btn btn-danger"
-             (click)="removeFromWatchlist(container.ContainerNumber)"
-              title="Remove from Watchlist"
-            >
-              <i class="fa fa-trash"></i>
-            </button>
-          </td>
+                *ngIf="!addedToCart.has(container.ContainerNumber)"
+                class="btn btn-watchlist"
+                (click)="addToCart(container)"
+              >
+                <i class="fa fa-shopping-cart"></i>
+              </button>
+              <span *ngIf="addedToCart.has(container.ContainerNumber)" class="tick-icon">
+                <i class="fa fa-check"></i>
+              </span>
+              <button
+                class="btn btn-danger"
+                (click)="removeFromWatchlist(container.ContainerNumber)"
+                title="Remove from Watchlist"
+              >
+                <i class="fa fa-trash"></i>
+              </button>
+            </div>
+          </td>          
         </tr>
       </tbody>
     </table>
