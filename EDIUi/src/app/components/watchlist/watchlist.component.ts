@@ -88,15 +88,13 @@ export class WatchlistComponent implements OnInit {
   getWatchlist(userId: string) {
     const headers = this.authService.getAuthHeaders(); // Get Auth Headers
     this.loading = true; // Start loader
+    this.errorMessage = ''; // Reset any error message
+
     this.watchlistService.getWatchlist(userId).subscribe(
       (data) => {
         this.watchlist = data; // Update watchlist
-        // If the watchlist is empty, stop the loader
-        if (this.watchlist.length === 0) {
-          this.loading = false;
-        }
         this.getContainerDetails(headers); // Fetch container details
-        this.cdr.detectChanges(); // Trigger change detection manually
+        this.loading = false; // Stop loader
       },
       (error) => {
         this.errorMessage = 'Failed to fetch watchlist!';
@@ -104,6 +102,7 @@ export class WatchlistComponent implements OnInit {
       }
     );
   }
+  
   
   getContainerDetails(headers: any) {
     this.containerDetails = []; // Clear existing container details
@@ -130,11 +129,17 @@ export class WatchlistComponent implements OnInit {
     const userId = this.authService.getUserIdFromToken();
     if (userId && this.newContainerNumber) {
       this.loading = true; // Show loader during add operation
+      this.errorMessage = ''; // Reset any error message
+      
+      // Set a 10-second timeout to refresh the page
+      setTimeout(() => {
+        window.location.reload();
+      }, 10000);
+  
       this.watchlistService.addToWatchlist(userId, this.newContainerNumber).subscribe(
         (response) => {
           this.getWatchlist(userId); // Refresh watchlist after addition
           this.closeAddModal();
-          this.cdr.detectChanges(); // Trigger change detection
         },
         (error) => {
           this.errorMessage = 'Failed to add container to watchlist!';
@@ -148,10 +153,16 @@ export class WatchlistComponent implements OnInit {
     const userId = this.authService.getUserIdFromToken();
     if (userId) {
       this.loading = true; // Show loader during removal operation
+      this.errorMessage = ''; // Reset any error message
+      
+      // Set a 10-second timeout to refresh the page
+      setTimeout(() => {
+        window.location.reload();
+      }, 10000);
+  
       this.watchlistService.removeFromWatchlist(userId, containerNumber).subscribe(
         (response) => {
           this.getWatchlist(userId); // Refresh watchlist after removal
-          this.cdr.detectChanges(); // Ensure the UI updates
         },
         (error) => {
           this.errorMessage = 'Failed to remove container from watchlist!';

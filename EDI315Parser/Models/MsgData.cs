@@ -19,8 +19,6 @@ namespace EDI315Parser.Models
         public SE seSegment { get; set; }
         public string SegmentType { get; set; }
         public object SegmentData { get; set; }
-
-        // New list for N9 segments
         public List<N9> n9Segments { get; set; } = new List<N9>();
     }
 }

@@ -64,7 +64,6 @@ namespace EDI315Api.Controllers
                 PartitionKey = containerDetails?["PartitionKey"]
             };
 
-            // Send message to Azure Service Bus
             await _serviceBusService.SendMessageAsync(message);
 
             return Ok("Container added to watchlist and message sent to Service Bus.");
@@ -74,7 +73,7 @@ namespace EDI315Api.Controllers
         public async Task<IActionResult> RemoveFromWatchlist(string userId, [FromBody] string containerNumber)
         {
 
-            // Remove container from the watchlist
+            
             var isRemoved = await _watchlistRepository.RemoveFromWatchlistAsync(userId, containerNumber);
             if (!isRemoved)
             {

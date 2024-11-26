@@ -14,23 +14,23 @@ namespace EDI315Parser
         private const string DatabaseName = "EDIParserDatabase";
         private const string ContainerName = "EDIParserContainer";
 
-        private static readonly string sourceFolder = "D:/project-docs";  // Folder to watch
-        private static readonly string processedFolder = "D:/processed-edi"; // Folder for processed files
+        private static readonly string sourceFolder = "D:/project-docs";  
+        private static readonly string processedFolder = "D:/processed-edi";
 
         public static async Task Main(string[] args)
         {
             Console.WriteLine("EDI 315 Parser Application Starting...");
 
-            // Initialize Cosmos DB
+           
             await CosmosService.InitializeAsync(EndpointUri, PrimaryKey);
 
-            // Ensure the processed folder exists
+         
             if (!Directory.Exists(processedFolder))
             {
                 Directory.CreateDirectory(processedFolder);
             }
 
-            // Get all .txt files in the project-docs folder
+            
             var ediFiles = Directory.GetFiles(sourceFolder, "*.txt");
 
             if (ediFiles.Length == 0)
@@ -39,16 +39,15 @@ namespace EDI315Parser
                 return;
             }
 
-            // Process each file in the folder
             foreach (var file in ediFiles)
             {
                 Console.WriteLine($"Processing file: {file}");
                 await ProcessEdiFile(file);
 
                 // Move the processed file to the 'processed-edi' folder
-                // string processedFilePath = Path.Combine(processedFolder, Path.GetFileName(file));
-                // File.Move(file, processedFilePath);
-                // Console.WriteLine($"File processed and moved to: {processedFilePath}");
+                string processedFilePath = Path.Combine(processedFolder, Path.GetFileName(file));
+                File.Move(file, processedFilePath);
+                Console.WriteLine($"File processed and moved to: {processedFilePath}");
             }
 
             Console.WriteLine("All files processed and moved to the processed-edi folder.");
@@ -104,7 +103,6 @@ namespace EDI315Parser
                             msgData.seSegment = SegmentParserService.ParseSESegment(lineData);
                             await CosmosService.PushDataToCosmos(msgData);
 
-                            // Removed Service Bus message-sending logic
                             msgData = null;
                         }
                         break;

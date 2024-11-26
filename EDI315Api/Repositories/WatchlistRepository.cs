@@ -30,19 +30,19 @@ namespace EDI315Api.Repositories
         }
         public async Task<bool> RemoveFromWatchlistAsync(string userId, string containerNumber)
         {
-            // Find the watchlist item with the provided userId and containerNumber
+            
             var watchlistItem = await _context.Watchlist
                 .Where(w => w.UserId == userId && w.ContainerNumber == containerNumber)
                 .FirstOrDefaultAsync();
 
             if (watchlistItem != null)
             {
-                _context.Watchlist.Remove(watchlistItem);  // Remove the item
-                await _context.SaveChangesAsync();  // Save changes to the database
-                return true;  // Return true if removal was successful
+                _context.Watchlist.Remove(watchlistItem);  
+                await _context.SaveChangesAsync();  
+                return true;  
             }
 
-            return false;  // Return false if item was not found
+            return false;  
         }
     }
 }
