@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
 import { AuthService } from '../../services/auth.service';
+import { environment } from '../../../environment'; 
 
 @Component({
   selector: 'app-cart',
@@ -18,8 +19,9 @@ export class CartComponent implements OnInit {
   totalDemurrageFees: number = 0;
   totalOtherPayments: number = 0;
 
-  // New properties for receipt
+  // New properties for receipt and loader
   showReceipt: boolean = false;
+  showLoader: boolean = false; // Loader visibility
   receiptData: any = null;
 
   constructor(
@@ -51,7 +53,6 @@ export class CartComponent implements OnInit {
     );
   }
 
-  // Remove item from cart
   removeItem(containerNumber: string) {
     this.cartService.removeCartItem(containerNumber);
     this.cartItems = this.cartItems.filter(
@@ -71,32 +72,28 @@ export class CartComponent implements OnInit {
       otherPayments: item.OtherPayments,
     }));
   
-    this.http
-      .post('http://localhost:4000/api/Payment/UpdatePayments', paymentData, {
-        headers: { 'Content-Type': 'application/json' },
-      })
-      .subscribe({
-        next: (response: any) => {
-          console.log('Payment data submitted successfully', response);
+    const paymentEndpoint = `${environment.paymentapi}/api/Payment/UpdatePayments`;
   
-          const userId = this.authService.getUserIdFromToken();
-          if (userId) {
-            this.cartService.clearCart();
-            this.cookieService.delete('cart_' + userId);
-          }
+    this.showLoader = true; // Show the loader
   
-          alert('Payment is successful!');
-          this.showReceipt = true;
+    this.http.post(paymentEndpoint, paymentData, {
+    }).subscribe({
+      next: (blob) => {
   
-          // Navigate to the watchlist page after alert
-          this.router.navigate(['/watchlist']);
-        },
-        error: (error) => {
-          console.error('Error submitting payment data', error);
-          alert('Error submitting payment data.');
-        },
-      });
+        alert('Payment is successful!');
+        this.router.navigate(['/watchlist']);
+      },
+      error: (error) => {
+        console.error('Error submitting payment data', error);
+        alert('Error submitting payment data.');
+      },
+      complete: () => {
+        this.showLoader = false; // Hide the loader after completion
+      },
+    });
   }
+  
+
   
 
   loadCartFromCookies(userId: string) {
@@ -121,3 +118,4 @@ export class CartComponent implements OnInit {
     }
   }
 }
+

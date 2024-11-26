@@ -158,7 +158,7 @@ export class WatchlistComponent implements OnInit {
       // Set a 10-second timeout to refresh the page
       setTimeout(() => {
         window.location.reload();
-      }, 10000);
+      }, 3000);
   
       this.watchlistService.removeFromWatchlist(userId, containerNumber).subscribe(
         (response) => {
