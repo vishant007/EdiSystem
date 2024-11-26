@@ -161,8 +161,8 @@ h1 {
 
 .action-buttons {
   display: flex;
-  gap: 10px; /* Adds space between buttons */
-  align-items: center; /* Vertically aligns content */
+  gap: 10px; 
+  align-items: center;
 }
 
 .action-buttons .btn {
@@ -205,4 +205,95 @@ h1 {
   100% {
     transform: rotate(360deg);
   }
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-wrap: wrap; 
+    justify-content: space-between;
+    padding: 5px;
+  }
+
+  .logo {
+    height: 20px;
+    margin-bottom: 5px;
+  }
+
+  h1 {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+
+  .action-icons {
+    gap: 10px;
+  }
+
+  .icon-button i {
+    font-size: 16px;
+  }
+
+  .search-bar input,
+  .filter-dropdown select {
+    font-size: 14px;
+    padding: 6px;
+  }
+
+  .table {
+    font-size: 12px; 
+    overflow-x: auto; 
+    display: block; 
+  }
+
+  .table thead,
+  .table tbody,
+  .table tr,
+  .table th,
+  .table td {
+    display: block; 
+
+  .table tr {
+    margin-bottom: 10px; 
+  }
+
+  .table th,
+  .table td {
+    padding: 8px;
+    text-align: left;
+    font-size: 14px;
+    word-wrap: break-word;
+  }
+
+  .table th {
+    background-color: black;
+    font-weight: bold;
+  }
+
+  .table td::before {
+    content: attr(data-label); 
+    display: block;
+    margin-bottom: 5px;
+    color: #666;
+  }
+
+  .action-buttons {
+    justify-content: flex-start;
+  }
+
+  .modal-content {
+    width: 90%; 
+  }
+}
+
+
+@media (max-width: 480px) {
+  .spinner {
+    width: 30px;
+    height: 30px;
+    border-width: 4px;
+  }
+
+  .icon-button i {
+    font-size: 14px;
+  }
+}
 }

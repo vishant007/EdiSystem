@@ -101,3 +101,54 @@
 .btn-submit:hover {
   background-color: #cc0a00;
 }
+@media (max-width: 768px) {
+  /* Reduce padding and adjust layout for smaller screens */
+  .cart-container {
+    padding: 15px;
+  }
+
+  .cart-container h2 {
+    font-size: 22px;
+    margin-bottom: 15px;
+  }
+
+  /* Table styles for smaller screens */
+  .table thead {
+    display: none; /* Hide table headers */
+  }
+
+  .table tbody tr {
+    display: block;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+
+  .table tbody tr td {
+    display: block;
+    text-align: left;
+    font-size: 14px;
+    padding: 8px;
+    border: none;
+  }
+
+  .table tbody tr td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+  }
+
+  .total-row {
+    display: block;
+    margin-top: 15px;
+  }
+
+  .total-row td {
+    display: block;
+    text-align: left;
+    font-size: 14px;
+    padding: 8px;
+  }
+}

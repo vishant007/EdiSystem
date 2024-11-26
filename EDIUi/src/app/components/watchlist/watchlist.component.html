@@ -5,7 +5,7 @@
 <div class="watchlist-container">
   <!-- Header with logo and title -->
   <div class="header">
-    <img src="images/logo.png" alt="Logo" class="logo" />
+    <img src="images/logo.webp" alt="Logo" class="logo" />
     <h1>eModal Community Portal</h1>
     <button class="icon-button" (click)="openAddContainerModal()">
       <i class="fa fa-plus"></i>
@@ -43,7 +43,6 @@
       <option value="Pending">Pending</option>
     </select>
   </div>
-  
 
   <!-- Table -->
   <div *ngIf="filteredContainers.length > 0; else noWatchlist">
