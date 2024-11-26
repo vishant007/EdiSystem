@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 using EDI315Api.Models;
 using EDI315Api.Services;
@@ -21,26 +22,45 @@ namespace EDI315Api.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] User user)
         {
-            await _userService.Register(user);
-            return Ok(new { Message = "User registered successfully!" });
+            try
+            {
+                await _userService.Register(user);
+                return Ok(new { Message = "User registered successfully!" });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred while processing your request.", Details = ex.Message });
+            }
         }
 
         [HttpPost("authenticate")]
         public async Task<IActionResult> Authenticate([FromBody] User user)
         {
-            var token = await _userService.Authenticate(user);
-            if (token == null)
+            try
             {
-                return Unauthorized(new { Message = "Invalid email or password!" });
+                var token = await _userService.Authenticate(user);
+                if (token == null)
+                {
+                    return Unauthorized(new { Message = "Invalid email or password!" });
+                }
+
+                return Ok(new
+                {
+                    Token = token,
+                });
             }
-
-
-            return Ok(new
+            catch (ArgumentException ex)
             {
-                Token = token,
-                
-            });
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred while processing your request.", Details = ex.Message });
+            }
         }
-
     }
 }

@@ -1,13 +1,14 @@
 using System;
+using System.ComponentModel.DataAnnotations;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using BCrypt.Net;
 using EDI315Api.Models;
 using EDI315Api.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace EDI315Api.Services
 {
@@ -24,6 +25,12 @@ namespace EDI315Api.Services
 
         public async Task<string> Authenticate(User user)
         {
+            // Validate email format
+            if (!IsValidEmail(user.Email))
+            {
+                throw new ArgumentException("Invalid email format");
+            }
+
             var existingUser = await _userRepository.GetUserByEmailAsync(user.Email);
             if (existingUser == null || !BCrypt.Net.BCrypt.Verify(user.Password, existingUser.Password))
             {
@@ -48,9 +55,23 @@ namespace EDI315Api.Services
 
         public async Task Register(User user)
         {
+            // Validate email format
+            if (!IsValidEmail(user.Email))
+            {
+                throw new ArgumentException("Invalid email format");
+            }
+
             user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
             await _userRepository.AddUserAsync(user);
         }
-        
+
+        // Helper method to validate email
+        private bool IsValidEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email)) return false;
+
+            var emailAttribute = new EmailAddressAttribute();
+            return emailAttribute.IsValid(email);
+        }
     }
 }
