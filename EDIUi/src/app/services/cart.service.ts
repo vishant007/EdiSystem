@@ -5,11 +5,9 @@ import { CookieService } from 'ngx-cookie-service';
   providedIn: 'root',
 })
 export class CartService {
-  private cartKey = 'cart'; // Key to store cart items in cookies
-
+  private cartKey = 'cart'; 
   constructor(private cookieService: CookieService) {}
 
-  // Get cart items from cookies
   getCartItems(): any[] {
     const cartData = this.cookieService.get(this.cartKey);
     if (cartData) {
@@ -23,7 +21,6 @@ export class CartService {
     return [];
   }
 
-  // Add an item to the cart
   addToCart(item: any): void {
     const cart = this.getCartItems();
     const alreadyInCart = cart.find(
@@ -35,19 +32,19 @@ export class CartService {
     }
   }
 
-  // Remove an item from the cart
+
   removeCartItem(containerNumber: string): void {
     const cart = this.getCartItems();
     const updatedCart = cart.filter((item) => item.ContainerNumber !== containerNumber);
     this.saveCartItems(updatedCart);
   }
 
-  // Clear all cart items
+
   clearCart(): void {
     this.cookieService.delete(this.cartKey, '/');
   }
 
-  // Save cart items to cookies
+
   private saveCartItems(cart: any[]): void {
     try {
       this.cookieService.set(this.cartKey, JSON.stringify(cart), { expires: 7, path: '/' });

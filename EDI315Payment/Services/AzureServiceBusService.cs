@@ -23,14 +23,12 @@ namespace EDI315Payment.Services
         {
             var receiver = _client.CreateReceiver(_topicName, _subscriptionName);
 
-            // Receive a single message
             var message = await receiver.ReceiveMessageAsync();
             if (message != null)
             {
                 var messageBody = message.Body.ToString();
                 var msgData = JsonSerializer.Deserialize<MsgData>(messageBody);
 
-                // Complete the message to remove it from the queue
                 await receiver.CompleteMessageAsync(message);
                 return msgData;
             }

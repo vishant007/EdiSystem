@@ -31,14 +31,13 @@ namespace EDI315Api.Controllers
         public async Task<IActionResult> AddToWatchlist(string userId, [FromBody] string containerNumber)
         {
 
-            // Check if container is already in the user's watchlist
             var existingWatchlist = await _watchlistRepository.GetUserWatchlistAsync(userId);
             if (existingWatchlist != null && existingWatchlist.Exists(w => w.ContainerNumber == containerNumber))
             {
                 return Conflict($"Container '{containerNumber}' is already in the watchlist for user ID '{userId}'.");
             }
 
-            // Add container to watchlist
+            
             var watchlistItem = new WatchlistModel
             {
                 UserId = userId,
@@ -46,7 +45,7 @@ namespace EDI315Api.Controllers
             };
             await _watchlistRepository.AddToWatchlistAsync(watchlistItem);
 
-            // Fetch additional details from Cosmos DB
+            
             var containerDetails = await _cosmosDbService.GetContainerDetailsAsync(containerNumber);
             if (containerDetails == null)
             {

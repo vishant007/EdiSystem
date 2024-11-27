@@ -44,13 +44,10 @@ namespace EDI315Parser
                 Console.WriteLine($"Processing file: {file}");
                 await ProcessEdiFile(file);
 
-                // Move the processed file to the 'processed-edi' folder
                 string processedFilePath = Path.Combine(processedFolder, Path.GetFileName(file));
                 File.Move(file, processedFilePath);
                 Console.WriteLine($"File processed and moved to: {processedFilePath}");
             }
-
-            Console.WriteLine("All files processed and moved to the processed-edi folder.");
         }
 
         private static async Task ProcessEdiFile(string filePath)

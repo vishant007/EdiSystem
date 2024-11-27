@@ -26,4 +26,11 @@ services:
       ASPNETCORE_ENVIRONMENT: "Development"
     depends_on:
       - db1   
+  angular-ui:
+    build:
+      context: ./EDIUi
+      dockerfile: Dockerfile
+    container_name: angular-ui
+    ports:
+      - "4200:4200"
       

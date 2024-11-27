@@ -8,11 +8,11 @@ namespace EDI315Parser.Helpers
         {
             if (DateTime.TryParseExact(dateStr, "yyyyMMdd", null, System.Globalization.DateTimeStyles.None, out var dateTime))
             {
-                return DateOnly.FromDateTime(dateTime);  // Convert DateTime to DateOnly
+                return DateOnly.FromDateTime(dateTime);
             }
             else
             {
-                return default;  // Return default DateOnly (0001-01-01) if parsing fails
+                return default;  
             }
         }
     }
