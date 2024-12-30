@@ -10,7 +10,7 @@ namespace EDI315Parser
     {
         // Cosmos DB connection details
         private const string EndpointUri = "https://edi-containers.documents.azure.com:443/";
-        private const string PrimaryKey = "hJstdxjcKIiBlqWxJ0UMSr2qib5YAxDDnuuV9G8EKwGzekmSz142dhpxz3idI2Te5yNUdsSXa5U2ACDbkj1tuw==";
+        private const string PrimaryKey = "h";
         private const string DatabaseName = "EDIParserDatabase";
         private const string ContainerName = "EDIParserContainer";
 
